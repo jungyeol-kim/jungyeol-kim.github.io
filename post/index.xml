@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts | Academic</title>
-    <link>https://academic-demo.netlify.app/post/</link>
-      <atom:link href="https://academic-demo.netlify.app/post/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://jungyeol-kim.github.io/post/</link>
+      <atom:link href="https://jungyeol-kim.github.io/post/index.xml" rel="self" type="application/rss+xml" />
     <description>Posts</description>
     <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Sun, 13 Dec 2020 00:00:00 +0000</lastBuildDate>
     <image>
-      <url>https://academic-demo.netlify.app/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
+      <url>https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
       <title>Posts</title>
-      <link>https://academic-demo.netlify.app/post/</link>
+      <link>https://jungyeol-kim.github.io/post/</link>
     </image>
     
     <item>
       <title>Welcome to Wowchemy, the website builder for Hugo</title>
-      <link>https://academic-demo.netlify.app/post/getting-started/</link>
+      <link>https://jungyeol-kim.github.io/post/getting-started/</link>
       <pubDate>Sun, 13 Dec 2020 00:00:00 +0000</pubDate>
-      <guid>https://academic-demo.netlify.app/post/getting-started/</guid>
+      <guid>https://jungyeol-kim.github.io/post/getting-started/</guid>
       <description>&lt;h2 id=&#34;overview&#34;&gt;Overview&lt;/h2&gt;
 &lt;ol&gt;
 &lt;li&gt;The Wowchemy website builder for Hugo, along with its starter templates, is designed for professional creators, educators, and teams/organizations - although it can be used to create any kind of site&lt;/li&gt;
@@ -90,10 +90,731 @@
     </item>
     
     <item>
+      <title>Dimensionality Reduction for High Dimensional Gene Expression Data</title>
+      <link>https://jungyeol-kim.github.io/post/sparse-pca/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/post/sparse-pca/</guid>
+      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+&lt;p&gt;We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;1&#34; srcset=&#34;
+               /post/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_7079b1b9dc62ef3781600183f8baf2c8.png 400w,
+               /post/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_1ef83d034dc521d073c2b4d5c107a79a.png 760w,
+               /post/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_7079b1b9dc62ef3781600183f8baf2c8.png&#34;
+               width=&#34;760&#34;
+               height=&#34;348&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;2&#34; srcset=&#34;
+               /post/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_50dd85c605eaf889f737ed086f704599.png 400w,
+               /post/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_c5189675adc7aa71c1df14f46cd2c07d.png 760w,
+               /post/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_50dd85c605eaf889f737ed086f704599.png&#34;
+               width=&#34;760&#34;
+               height=&#34;346&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+Throughout this report, we use &lt;em&gt;primary tissues (SMTS)&lt;/em&gt; rather than tissues (SMTSD) for simple visualization.&lt;/p&gt;
+&lt;h2 id=&#34;principal-component-analysis-pca&#34;&gt;Principal Component Analysis (PCA)&lt;/h2&gt;
+&lt;p&gt;We aim to see if the standard PCA can reveal the difference in gene expressions among different tissue types. We first perform PCA and compute the principal components.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021) 
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+a&amp;lt;-summary(pca.results)$importance[2,1:35]
+b&amp;lt;-summary(pca.results)$importance[3,1:35]
+pc_var_expd&amp;lt;-data.frame(&#39;PC&#39;=1:length(a), &#39;pct&#39;=a, &#39;pct_cum&#39;=b, stringsAsFactors = F)
+
+ggplot(data = pc_var_expd, aes(x = as.factor(PC))) +
+  geom_col(aes(y = pct)) +
+  geom_line(aes(y = pct_cum, group = 1)) +
+  geom_hline(yintercept = 0.75, linetype=&amp;quot;dashed&amp;quot;, color = &amp;quot;gray50&amp;quot;, size=0.5) +
+  geom_point(aes(y = pct_cum)) +
+  labs(x = &amp;quot;Principal component&amp;quot;, y = &amp;quot;Proportion of Variance&amp;quot;) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75), limits = c(0, 0.755)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 18), axis.title.x=element_text(size=24, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 18), axis.title.y=element_text(size=24, face=&amp;quot;bold&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;3&#34; srcset=&#34;
+               /post/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1d143cdb005916fb3926ee80859cbd32.png 400w,
+               /post/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_0d77f2e6c44903a891f51d7eb395e10d.png 760w,
+               /post/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1d143cdb005916fb3926ee80859cbd32.png&#34;
+               width=&#34;760&#34;
+               height=&#34;326&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;We notice is that the first 35 components explains over $75% $ of variance. &lt;em&gt;We can effectively reduce dimensionality from $19248 $ to $35 $ while only loosing about $25% $ of variance.&lt;/em&gt; We also notice that we can actually explain over $28% $ of variance with just the first two components and over $26% $ of variance with just the first and the third components. The pairwise scatter plot of principal components are displayed as follows. Figure 4(b) shows that, with only two components, we can clearly see separation of Brain, Pituitary, Blood, and Testis tissues from all others.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;temp&amp;lt;-data.frame(pca.results$x, &#39;SMTS&#39;=as.factor(final.data.orig$SMTS), &#39;SMTSD&#39;=as.factor(final.data.orig$SMTSD))
+
+gg_color_hue &amp;lt;- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+cols = gg_color_hue(length(levels(temp$SMTS)))
+fills = gg_color_hue(length(levels(temp$SMTS)))
+alphas = rep(0.2,length(levels(temp$SMTS)))
+
+# SMTS.select&amp;lt;-levels(temp$SMTS)
+SMTS.select&amp;lt;-c(&amp;quot;Brain&amp;quot;, &amp;quot;Blood&amp;quot;, &amp;quot;Testis&amp;quot;, &amp;quot;Pituitary&amp;quot;)
+
+c.color&amp;lt;-which(!levels(temp$SMTS) %in% SMTS.select)
+cols[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+fills[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+alphas[c.color]&amp;lt;-0
+
+means &amp;lt;- temp %&amp;gt;%
+  filter(SMTS %in% SMTS.select) %&amp;gt;%
+  group_by(SMTS) %&amp;gt;%
+  summarise(mean_PC1 = mean(PC1),
+            mean_PC3 = mean(PC3)) 
+
+ggplot(temp, aes(x = PC1, y = PC3, label = SMTS)) + 
+  geom_point(aes(colour = SMTS), size=0.5, alpha=0.7, show.legend = FALSE) +
+  stat_ellipse(aes(fill = SMTS, alpha = SMTS), level = .95, geom = &amp;quot;polygon&amp;quot;, lty=0, show.legend = FALSE) +
+  geom_label(data = means, aes(x = mean_PC1, y = mean_PC3, color = SMTS), show.legend = FALSE) +
+  scale_colour_manual(values=cols) +
+  scale_fill_manual(values=fills) +
+  scale_alpha_manual(values=alphas) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 17), axis.title.x=element_text(size=20, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 17), axis.title.y=element_text(size=20, face=&amp;quot;bold&amp;quot;))
+@
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;4&#34; srcset=&#34;
+               /post/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_0702de36dce05981a0a139b16dfabf4c.png 400w,
+               /post/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_b4c7a22c9bb37d7661625bf2a197e848.png 760w,
+               /post/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_0702de36dce05981a0a139b16dfabf4c.png&#34;
+               width=&#34;760&#34;
+               height=&#34;459&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;5&#34; srcset=&#34;
+               /post/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_cf016d8291a9d30dd4e5ec570a7d1b61.png 400w,
+               /post/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_be5debfcfc25e87888e55f0b328bbf37.png 760w,
+               /post/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_cf016d8291a9d30dd4e5ec570a7d1b61.png&#34;
+               width=&#34;760&#34;
+               height=&#34;329&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h2 id=&#34;sparse-pca&#34;&gt;Sparse PCA&lt;/h2&gt;
+&lt;p&gt;Since standard PCA does not impose sparsity constraints on the loadings of principal directions, principal components are usually linear combinations of all input features and the none of the loadings are zero in general as shown in Figure 6. However, in Sparse PCA, principal components are a linear combination of a subset of input features, which provides an improved interpretability of the model. Sparse PCA prevents overfitting in this data where the number of features, $p $, is greater than the number of observations, $N $.&lt;/p&gt;
+&lt;p&gt;We therefore use sparse PCA introduced by [1,2]. This Sparse PCA aims to minimize the following problem:
+$$\text{min } f(A,B) = \frac{1}{2} ||X - XBA^T||^2 + \alpha ||B||_1 + \frac{1}{2} \beta ||B||^2, $$
+$$\text{ subject to } A^T A = I. $$
+where the matrix B is the sparse weight (loadings) matrix and A is an orthonormal matrix. This uses the elastic net regularization. The principal components $Z $ are formed as $Z = XB $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021)
+sparsepca.results.0.3 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-3, beta=1e-3, center = FALSE, scale = FALSE)
+sparsepca.results.0.4 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-4, beta=1e-4, center = FALSE, scale = FALSE)
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+num.zero.0.3&amp;lt;-vector()
+num.zero.0.4&amp;lt;-vector()
+num.zero.pca&amp;lt;-vector()
+num.zero.0.3[1]&amp;lt;-sum(sparsepca.results.0.3$loadings[,1]==0)
+num.zero.0.4[1]&amp;lt;-sum(sparsepca.results.0.4$loadings[,1]==0)
+num.zero.pca[1]&amp;lt;-sum(pca.results$rotation[,1]==0)
+for(i in 2:35){
+  PCs&amp;lt;-1:i
+  num.zero.0.3[i]&amp;lt;-sum(rowSums(sparsepca.results.0.3$loadings[,PCs])==0)
+  num.zero.0.4[i]&amp;lt;-sum(rowSums(sparsepca.results.0.4$loadings[,PCs])==0)
+  num.zero.pca[i]&amp;lt;-sum(rowSums(pca.results$rotation[,PCs])==0)
+}
+
+plot(1:35, num.zero.0.3, xlab=&amp;quot;Number of Principle Components&amp;quot;, 
+    ylab=&amp;quot;Number of Common Features with Zero Coefficients across PC&#39;s&amp;quot;, 
+    type=&#39;o&#39;, lty=2, pch=1, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.0.4, type=&#39;o&#39;, lty=3, pch=3, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.pca, type=&#39;o&#39;,  lty=1, pch=5, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+abline(h=19248, lty=3)
+text(25, 18500, labels = &amp;quot;Total number of features p=19248&amp;quot;, cex=1.3)
+text(25, 13500, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-3,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-3)), cex=1.3)
+text(25, 5000, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-4,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-4)), cex=1.3)
+text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;6&#34; srcset=&#34;
+               /post/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_8fa664d3bceb26cb54c2ec2bdda47b3f.png 400w,
+               /post/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_9c14029c464cab5bd2cd57733511042a.png 760w,
+               /post/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_8fa664d3bceb26cb54c2ec2bdda47b3f.png&#34;
+               width=&#34;760&#34;
+               height=&#34;486&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Figure 6 confirms that non-negligible number of features have zero coefficient across the principal components. For example, for Sparse PCA under the condition of $\alpha=10^{-3} $ and $\beta=10^{-3} $, $11518 $ features out of $p=19248 $ features have zero coefficients across the first $35 $ principal components. The number of features with zero coefficients across the PCs would decrease with the number of PCs, but there is a diminishing return. This indicates that the $11518 $ features are likely to be uninformative. Since $\alpha $ is a sparsity controlling parameter and $\beta $ controls the amount of ridge shrinkage, higher values of $\alpha $ lead to sparser components. Refer to the two different results of sparse PCA with two different parameters in Figure 6.&lt;/p&gt;
+&lt;p&gt;We now plot Sparse PCA (with parameters $\alpha=10^{-3} $ and $\beta=10^{-3} $) to see if the Sparse PCA can reveal the difference in gene expressions among different tissue types. Figure 7 shows the pairwise scatter plots of the principal components. We can clearly see separation of &lt;em&gt;Brain, Testis, Pituitary, Skin, Muscle, Heart, Blood Vessel, Nerve, Blood, Liver, Lung, Adipose Tissue&lt;/em&gt;, and &lt;em&gt;Spleen&lt;/em&gt; tissues from all others.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;7&#34; srcset=&#34;
+               /post/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_cd727805e1b5561918af91574b49d03e.png 400w,
+               /post/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_8e697931298b3fb88a6b358ad240061c.png 760w,
+               /post/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_cd727805e1b5561918af91574b49d03e.png&#34;
+               width=&#34;718&#34;
+               height=&#34;760&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
+&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
+&lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
+&lt;!-- Press, 2008. --&gt;
+&lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
+&lt;!-- Cluster_analysis, 2021. --&gt;
+&lt;!-- [5] D. M. Witten and R. Tibshirani, “A framework for feature selection in clustering,” Journal of the American --&gt;
+&lt;!-- Statistical Association, vol. 105, no. 490, pp. 713–726, 2010. --&gt;
+&lt;!-- [6] Y. Kondo, M. Salibiann-Barrera, and R. H. Zamar, “Robustification of the sparse k-means clustering al- gorithm.” https://www.birs.ca/workshops/2011/11w5051/files/06_Yumi_Kondo_A_Robust_And_Sparse_K_ Means_Clustering_Algorithm.pdf, 2011. --&gt;
+&lt;!-- [7] M. Chavent, A. Mourer, and M. Olteanu, “Sparse weighted k-means for mixed data.” https://cran.r-project. org/web/packages/vimpclust/vignettes/sparsewkm.html#ref-sparsekmeans, 2020. --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hello R Markdown</title>
+      <link>https://jungyeol-kim.github.io/post/2020-12-01-r-rmarkdown/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/post/2020-12-01-r-rmarkdown/</guid>
+      <description>&lt;h1 id=&#34;r-markdown&#34;&gt;R Markdown&lt;/h1&gt;
+&lt;p&gt;This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see &lt;a href=&#34;http://rmarkdown.rstudio.com&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;http://rmarkdown.rstudio.com&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can embed an R code chunk like this:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;summary(cars)
+##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+fit &amp;lt;- lm(dist ~ speed, data = cars)
+fit
+## 
+## Call:
+## lm(formula = dist ~ speed, data = cars)
+## 
+## Coefficients:
+## (Intercept)        speed  
+##     -17.579        3.932
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h1 id=&#34;including-plots&#34;&gt;Including Plots&lt;/h1&gt;
+&lt;p&gt;You can also embed plots. See Figure &lt;a href=&#34;#fig:pie&#34;&gt;1&lt;/a&gt; for example:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;par(mar = c(0, 1, 0, 1))
+pie(
+  c(280, 60, 20),
+  c(&#39;Sky&#39;, &#39;Sunny side of pyramid&#39;, &#39;Shady side of pyramid&#39;),
+  col = c(&#39;#0292D8&#39;, &#39;#F7EA39&#39;, &#39;#C4B632&#39;),
+  init.angle = -50, border = NA
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://jungyeol-kim.github.io/post/2020-12-01-r-rmarkdown/index.en_files/figure-html/pie-1.png&#34; alt=&#34;A fancy pie chart.&#34; width=&#34;672&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Figure 1: A fancy pie chart.&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Lasso and Estimation Bound</title>
+      <link>https://jungyeol-kim.github.io/post/lasso/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/post/lasso/</guid>
+      <description>&lt;h2 id=&#34;theorem-1-on-page-4&#34;&gt;Theorem 1 on page 4&lt;/h2&gt;
+&lt;p&gt;By the definition of Lasso, we have&lt;/p&gt;
+&lt;p&gt;\begin{align}
+\frac{1}{2n} ||Y-X\hat{\beta}||_2^2 + \lambda_n ||\hat{\beta}||_1 \leq \frac{1}{2n} ||Y-X{\beta}^{\star}||^2 + \lambda_n ||{\beta}^{\star}||_1
+\end{align}&lt;/p&gt;
+&lt;p&gt;We use true model equation $ Y=X{\beta}^{\star}+\epsilon $. By substituting $ Y $ for $ X{\beta}^{\star}+\epsilon $, we have&lt;/p&gt;
+&lt;p&gt;\begin{align}
+\frac{1}{2n} ||X (\hat{\beta}-\beta^{\star})||_2^2 &amp;amp; \leq \frac{\epsilon^\top X (\hat{\beta}-\beta^{\star})}{n} + \lambda_n (||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; (\text{by Holder&amp;rsquo;s Inequality, }\epsilon^\top X (\hat{\beta}-\beta^{\star}) = |\sum_{i=1}^{d}(\epsilon^\top X)_i (\hat{\beta}-\beta^{\star})_i|  \leq ||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1) \nonumber \\
+&amp;amp; \leq \frac{||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1}{n} + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; (\text{by Triangle Inequality, }||\hat{\beta}-\beta^{\star}||_1 \leq ||\hat{\beta}||_1 + ||-\beta^{\star}||_1 = ||\hat{\beta}||_1 + ||\beta^{\star}||_1) \nonumber \\&lt;br&gt;
+&amp;amp; \leq \frac{||X^\top \epsilon||_{\infty}}{n} (||\hat{\beta}||_1 + ||\beta^{\star}||_1) + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; = ||\hat{\beta}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n)}_{\leq 0}} + ||{\beta}^{\star}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  + \lambda_n)}_{\leq 2\lambda_n}} \\&lt;br&gt;
+&amp;amp; (\because \frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n \leq 0 \text{ by the condition of the Theorem 1}) \nonumber\\&lt;br&gt;
+&amp;amp; \leq ||\beta^{\star}||_1 \cdot 2\lambda_n
+\label{eqn:2}
+\end{align}&lt;/p&gt;
+&lt;p&gt;So we see the last expression $ \frac{1}{n} ||X (\hat{\beta}-\beta^{\star})||_2^2 \leq 4 ||\beta^{\star}||_1 \lambda_n $. This finishes the proof.&lt;/p&gt;
+&lt;h2 id=&#34;probability-bound-of--pleftfracxtop-epsilon_inftyngeq-tright--on-page-5&#34;&gt;Probability bound of $ P\left(\frac{||X^\top \epsilon||_{\infty}}{n}\geq t\right) $ on page 5&lt;/h2&gt;
+&lt;p&gt;\begin{align}
+P\left(\frac{||X^\top \epsilon||_{\infty}}{n}\geq t\right) &amp;amp;= P\left(\frac{\max_{j}|X_j^\top \epsilon|}{n}\geq t\right) \\&lt;br&gt;
+&amp;amp;\leq \sum_{j=1}^d P\left(\frac{|X_j^\top \epsilon|}{n}\geq t\right) \\&lt;br&gt;
+&amp;amp;\leq \sum_{j=1}^d {\underbrace{P\left(\frac{X_j^\top \epsilon}{n}\geq t\right)}_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X_j||_2^2} \right]}} + {\underbrace{P\left(\frac{X_j^\top \epsilon}{n}\leq -t\right)}_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X_j||_2^2} \right]}} \\&lt;br&gt;
+&amp;amp; (\text{by the two last results for sub-Gaussian r.v. on page 3})\nonumber\\&lt;br&gt;
+&amp;amp;\leq \sum_{j=1}^d 2 \exp\left[\frac{-t^2n^2}{2\sigma^2||X_j||_2^2} \right] \quad  \\&lt;br&gt;
+&amp;amp;\leq 2d \exp\left[\frac{-t^2n^2}{2\sigma^2 nC} \right] \quad  (\text{by the assumption, } \max_j||X_j||\leq \sqrt{nC})\\&lt;br&gt;
+&amp;amp;=\exp\left[\frac{-t^2n}{2\sigma^2 C} + \log 2d\right]
+\label{eqn:3}
+\end{align}
+This finishes the proof.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Vehicular Messaging Simulation</title>
+      <link>https://jungyeol-kim.github.io/post/v2v/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/post/v2v/</guid>
+      <description>&lt;p&gt;V2V technologies bridge two infrastructures: communication and transportation. These infrastructures are interconnected and interdependent. To capture this inter-dependence, which may vary in time and space, we propose a new methodology for modeling information propagation between V2V-enabled vehicles. The model is based on a continuous-time Markov chain which is shown to converge, under appropriate conditions, to a set of clustered epidemiological differential equations. The fraction of vehicles which have received a message, as a function of space and time may be obtained as a solution of these differential equations, which can be solved efficiently, independently of the number of vehicles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Objective:&lt;/strong&gt; Our goal is to model the spread of V2V messages and obatin the fraction of vehicles which have received a message in arbitrary transportation networks, as a function of space and time, using a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;mobility-and-communicatoin-networks&#34;&gt;Mobility and Communicatoin Networks&lt;/h2&gt;
+&lt;!-- ### Case study: Grid road topology --&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;png&#34; srcset=&#34;
+               /post/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_d761fe09313ded7ce1bfb70ead75e7b9.png 400w,
+               /post/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_3d7d91377923f82872e761feddda6bd6.png 760w,
+               /post/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/post/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_d761fe09313ded7ce1bfb70ead75e7b9.png&#34;
+               width=&#34;532&#34;
+               height=&#34;556&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;As an example, we consider the grid road topology with six avenues and streets. In this network, we assume that all roads are two-way and allow vehicles to move in both directions, and a road segment consists of two clusters corresponding to the opposite directional roads. Since two clusters on the same road segment are sufficiently close to each other, we also assume that the vehicles located in these can communicate; there is an undirected edge between the two clusters on the same road segment.&lt;/p&gt;
+&lt;p&gt;Under these settings, we can create three aforementioned files that are essential for the vehicular messaging simulation using clustered epidemiological differential equations. The files I have already created under these assumptions can be downloaded from the following GitHub repository: &lt;a href=&#34;https://github.com/jungyeol-kim/V2X-simulations&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/jungyeol-kim/V2X-simulations&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, for any road topologies, vehicle movement patterns, and communication environment, you can use the software code below to automatically generate a set of clustered epidemiological differential equations corresponding to the given conditions, and perform V2V message propagation simulation using the generated differential equations.&lt;/p&gt;
+&lt;p&gt;The following sections describe the software code structure in detail using the sample input files provided based on the above road topology.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Importing edge list of mobility network&lt;/strong&gt;
+We import preset edge list of directed mobility network and corresponding mobility parameter $\lambda_{ij} $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mobility_network&amp;lt;-read.csv(&amp;quot;mobility-network.csv&amp;quot;, header=T, as.is=T)
+mobility_network$lambda_from_to&amp;lt;-mobility_network$routing_prob*mobility_network$lambda
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mobility_network) #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   from_clust to_clust routing_prob lambda lambda_from_to
+## 1          1        2          0.5   0.05          0.025
+## 2          1       36          0.5   0.05          0.025
+## 3          2        3          0.5   0.05          0.025
+## 4          2       41          0.5   0.05          0.025
+## 5          3        4          0.5   0.05          0.025
+## 6          3       46          0.5   0.05          0.025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Importing edge list of communication network&lt;/strong&gt;
+We import preset edge list of undirected communication network and corresponding communication parameter $\beta_{ij} $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;communication_network&amp;lt;-read.csv(&amp;quot;communication-network.csv&amp;quot;, header=T, as.is=T)
+communication_network&amp;lt;-communication_network[order(communication_network$cluster_i,
+                                                   communication_network$cluster_j),]
+rownames(communication_network) &amp;lt;- NULL # reset row names
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(communication_network) #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   cluster_i cluster_j beta_ij
+## 1         1         1      10
+## 2         1        61      10
+## 3         2         2      10
+## 4         2        62      10
+## 5         3         3      10
+## 6         3        63      10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Defining a neighborhood of a cluster&lt;/strong&gt;
+We define a neighborhood of each cluster for both directed mobility network and undirected communication network.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;total.clusters&amp;lt;-120
+mob.edge.out&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# outgoing edges from node i in the mobility network
+mob.edge.out.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# mobility parameter of outgoing edges from node i in the mobility network
+mob.edge.in&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# incoming edges to node i in the mobility network
+mob.edge.in.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# mobility parameter of incoming edges from node i in the mobility network
+comm.edge&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# undirected edges from or to node i in the communication network
+comm.edge.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# communication parameter of undirected edges from or to node i in the communication network
+for (i in 1:total.clusters) {
+  temp1&amp;lt;-mobility_network[mobility_network$from_clust==i,]
+  temp2&amp;lt;-communication_network[communication_network$cluster_i==i,]
+  mob.edge.out[[i]]&amp;lt;-temp1$to_clust
+  mob.edge.out.rate[[i]]&amp;lt;-temp1$lambda_from_to
+  comm.edge[[i]]&amp;lt;-temp2$cluster_j
+  comm.edge.rate[[i]]&amp;lt;-temp2$beta_ij
+  for(j in 1:length(mob.edge.out[[i]])){
+    mob.edge.in[[mob.edge.out[[i]][j]]]&amp;lt;-c(mob.edge.in[[mob.edge.out[[i]][j]]],i)
+    mob.edge.in.rate[[mob.edge.out[[i]][j]]]&amp;lt;-c(mob.edge.in.rate[[mob.edge.out[[i]][j]]],
+                                                mob.edge.out.rate[[i]][j])
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Quick exploration of the result&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.out[[1]] #View(end point of outgoing edges from a given cluster 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  2 36
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.out.rate[[1]] #View(mobility rates corresponding to outgoing edges from a given cluster 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.025 0.025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Endpoints of outgoing edges for a given cluster (vertex) 1 are cluster 2 and 36.&lt;/li&gt;
+&lt;li&gt;Mobility rate from cluster 1 to 2 is 0.25, and mobility rate from 1 to 36 is also 0.25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.in[[7]] #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  6 36 97
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.in.rate[[7]] #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.01666667 0.01666667 0.01666667
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Incoming edges to cluster 7 come from cluster 6, 36, and 97.&lt;/li&gt;
+&lt;li&gt;Mobility rate from cluster 6 to 7 is 0.01666667, mobility rate from 36 to 7 is 0.25, and mobility rate from 97 to 7 is 0.25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.edge[[25]] #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 25 85
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.edge.rate[[25]] #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 10 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Vehicles in cluster 25 can communicate with other vehicles in the same cluster 25, and also communicate with vehicles in cluster 85. (intra- and inter-cluster communication)&lt;/li&gt;
+&lt;li&gt;Intra-cluster communication parameter $\beta_{25,25} $ is 10, and inter-cluster communication parameter $\beta_{25,85} = \beta_{85,25} $ corresponding to communication between cluster 10 and 70 is also 10.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;generation-of-differential-equations&#34;&gt;Generation of Differential Equations&lt;/h2&gt;
+&lt;p&gt;Recall that under the conditions of our model, for a given choice of initial conditions $\bigl({\bf I}(0), {\bf S}(0)\bigr) $, the time-evolution, $\bigl({\bf I}(t), {\bf S}(t)\bigr) $, of the distribution of the asymptotic fraction of informed and non-informed vehicles across clusters is governed by the following system of ordinary differential equations:&lt;/p&gt;
+&lt;p&gt;$$\dot{I}_j(t)=-\sum_{k\neq j}^{J} \lambda^I_{jk}\left({\bf{I,S}}\right) \cdot I_j + \sum_{k=1}^{J}\beta_{kj} \cdot I_k\cdot S_j  + \sum_{k\neq j}^{J} \lambda^I_{kj}\left({\bf{I,S}}\right)\cdot I_k \qquad (j=1,2,\dots,J), $$
+$$ \dot{S}_j(t)=-\sum_{k\neq j}^{J}\lambda^S_{jk}\left({\bf{I,S}}\right) \cdot S_j -  \sum_{k=1}^{J}\beta_{kj} \cdot I_k \cdot S_j  + \sum_{k\neq j}^{J}\lambda^S_{kj}\left({\bf{I,S}}\right) \cdot S_k \qquad (j=1,2,\dots,J). $$&lt;/p&gt;
+&lt;!-- $$ \dot{I}_j(t)=-\sum_{k\neq j}^{J} \lambda^I_{jk}\left({\bf{I,S}}\right) \cdot I_j + \sum_{k=1}^{J}\beta_{kj} \cdot I_k\cdot S_j  + \sum_{k\neq j}^{J} \lambda^I_{kj}\left({\bf{I,S}}\right)\cdot I_k \qquad (j=1,2,\dots,J), $$  --&gt;
+&lt;!-- $$ \dot{S}_j(t)=-\sum_{k\neq j}^{J}\lambda^S_{jk}\left({\bf{I,S}}\right) \cdot S_j -  \sum_{k=1}^{J}\beta_{kj} \cdot I_k \cdot S_j  + \sum_{k\neq j}^{J}\lambda^S_{kj}\left({\bf{I,S}}\right) \cdot S_k \qquad (j=1,2,\dots,J). $$ --&gt;
+&lt;p&gt;We now create a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt; for the given mobility and communicatoin networks. The number of variables and the total number of differential equations are $2J $ each (recall that $J $ is the total number of clusters). The $2J $-dimensional vector $(y_1,y_2,&amp;hellip;,y_J; y_{J+1},y_{J+2},&amp;hellip;,y_{2J})=(I_1,I_2,&amp;hellip;,I_J; S_1,S_2,&amp;hellip;,S_J) $ represent the instantaneous state of the system, semicolon and extra spacing have been added merely for visual separation of informed and non-informed vehicular counts in the various clusters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;We create the first summation term on right hand side&lt;/strong&gt;
+The first summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the outgoing mobility from cluster $j $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.out.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  mob.out.text.temp.1&amp;lt;-c();  mob.out.text.temp.2&amp;lt;-c();
+  mob.out.text.temp.3&amp;lt;-c();  mob.out.text.temp.4&amp;lt;-c()
+  for(j in 1:length(mob.edge.out[[i]])){
+    mob.out.text.temp.1&amp;lt;-paste(&amp;quot;- &amp;quot;,mob.edge.out.rate[[i]][j],&amp;quot;*y[&amp;quot;,i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.out.text.temp.2&amp;lt;-paste(mob.out.text.temp.2,mob.out.text.temp.1,sep=&amp;quot; &amp;quot;)
+    mob.out.text.temp.3&amp;lt;-paste(&amp;quot;- &amp;quot;,mob.edge.out.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                               total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.out.text.temp.4&amp;lt;-paste(mob.out.text.temp.4,mob.out.text.temp.3,sep=&amp;quot; &amp;quot;)
+  }
+  mob.out.text[i]&amp;lt;-mob.out.text.temp.2
+  mob.out.text[total.clusters+i]&amp;lt;-mob.out.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mob.out.text) #View(the first summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot; - 0.025*y[1] - 0.025*y[1]&amp;quot;                                     
+## [2] &amp;quot; - 0.025*y[2] - 0.025*y[2]&amp;quot;                                     
+## [3] &amp;quot; - 0.025*y[3] - 0.025*y[3]&amp;quot;                                     
+## [4] &amp;quot; - 0.025*y[4] - 0.025*y[4]&amp;quot;                                     
+## [5] &amp;quot; - 0.05*y[5]&amp;quot;                                                   
+## [6] &amp;quot; - 0.01666666665*y[6] - 0.01666666665*y[6] - 0.01666666665*y[6]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We create the second summation term on right hand side&lt;/strong&gt;
+The second summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the intra- and inter-communication in cluster $j $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  comm.text.temp.1&amp;lt;-c();  comm.text.temp.2&amp;lt;-c();
+  comm.text.temp.3&amp;lt;-c();  comm.text.temp.4&amp;lt;-c()
+  for(j in 1:length(comm.edge[[i]])){
+    comm.text.temp.1&amp;lt;-paste(comm.edge.rate[[i]][j],&amp;quot;*y[&amp;quot;,comm.edge[[i]][j],&amp;quot;]*y[&amp;quot;,
+                            total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    comm.text.temp.2&amp;lt;-paste(comm.text.temp.2,&amp;quot; + &amp;quot;,comm.text.temp.1,sep=&amp;quot;&amp;quot;)
+    comm.text.temp.3&amp;lt;-paste(comm.edge.rate[[i]][j],&amp;quot;*y[&amp;quot;,comm.edge[[i]][j],&amp;quot;]*y[&amp;quot;,
+                            total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    comm.text.temp.4&amp;lt;-paste(comm.text.temp.4,&amp;quot; - &amp;quot;,comm.text.temp.3,sep=&amp;quot;&amp;quot;)
+  }
+  comm.text[i]&amp;lt;-comm.text.temp.2
+  comm.text[total.clusters+i]&amp;lt;-comm.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(comm.text) #View(the second summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot; + 10*y[1]*y[121] + 10*y[61]*y[121]&amp;quot; &amp;quot; + 10*y[2]*y[122] + 10*y[62]*y[122]&amp;quot;
+## [3] &amp;quot; + 10*y[3]*y[123] + 10*y[63]*y[123]&amp;quot; &amp;quot; + 10*y[4]*y[124] + 10*y[64]*y[124]&amp;quot;
+## [5] &amp;quot; + 10*y[5]*y[125] + 10*y[65]*y[125]&amp;quot; &amp;quot; + 10*y[6]*y[126] + 10*y[66]*y[126]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We create the third summation term on right hand side&lt;/strong&gt;
+The third summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the incoming mobility to cluster $j $&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.in.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  mob.in.text.temp.1&amp;lt;-c();  mob.in.text.temp.2&amp;lt;-c();
+  mob.in.text.temp.3&amp;lt;-c();  mob.in.text.temp.4&amp;lt;-c()
+  for(j in 1:length(mob.edge.in[[i]])){
+    mob.in.text.temp.1&amp;lt;-paste(mob.edge.in.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                              mob.edge.in[[i]][j],&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.in.text.temp.2&amp;lt;-paste(mob.in.text.temp.2,&amp;quot; + &amp;quot;,mob.in.text.temp.1,sep=&amp;quot; &amp;quot;)
+    mob.in.text.temp.3&amp;lt;-paste(mob.edge.in.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                              total.clusters+mob.edge.in[[i]][j],&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.in.text.temp.4&amp;lt;-paste(mob.in.text.temp.4,&amp;quot; + &amp;quot;,mob.in.text.temp.3,sep=&amp;quot; &amp;quot;)
+  }
+  mob.in.text[i]&amp;lt;-mob.in.text.temp.2
+  mob.in.text[total.clusters+i]&amp;lt;-mob.in.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mob.in.text) #View(the third summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;  +  0.05*y[91]&amp;quot;                  &amp;quot;  +  0.025*y[1]  +  0.025*y[96]&amp;quot; 
+## [3] &amp;quot;  +  0.025*y[2]  +  0.025*y[101]&amp;quot; &amp;quot;  +  0.025*y[3]  +  0.025*y[106]&amp;quot;
+## [5] &amp;quot;  +  0.025*y[4]  +  0.025*y[111]&amp;quot; &amp;quot;  +  0.025*y[31]  +  0.025*y[92]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We now combine the all terms to create the complete set of differential equations&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;dy&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for (i in 1:(total.clusters*2)) {
+   dy[i]&amp;lt;-paste(&amp;quot;dy&amp;quot;,i,&amp;quot; &amp;lt;- &amp;quot;,mob.out.text[i],mob.in.text[i],comm.text[i],sep=&amp;quot;&amp;quot;)
+} 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(dy) # View(complete set of differential equations)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;dy1 &amp;lt;-  - 0.025*y[1] - 0.025*y[1]  +  0.05*y[91] + 10*y[1]*y[121] + 10*y[61]*y[121]&amp;quot;                                                      
+## [2] &amp;quot;dy2 &amp;lt;-  - 0.025*y[2] - 0.025*y[2]  +  0.025*y[1]  +  0.025*y[96] + 10*y[2]*y[122] + 10*y[62]*y[122]&amp;quot;                                      
+## [3] &amp;quot;dy3 &amp;lt;-  - 0.025*y[3] - 0.025*y[3]  +  0.025*y[2]  +  0.025*y[101] + 10*y[3]*y[123] + 10*y[63]*y[123]&amp;quot;                                     
+## [4] &amp;quot;dy4 &amp;lt;-  - 0.025*y[4] - 0.025*y[4]  +  0.025*y[3]  +  0.025*y[106] + 10*y[4]*y[124] + 10*y[64]*y[124]&amp;quot;                                     
+## [5] &amp;quot;dy5 &amp;lt;-  - 0.05*y[5]  +  0.025*y[4]  +  0.025*y[111] + 10*y[5]*y[125] + 10*y[65]*y[125]&amp;quot;                                                   
+## [6] &amp;quot;dy6 &amp;lt;-  - 0.01666666665*y[6] - 0.01666666665*y[6] - 0.01666666665*y[6]  +  0.025*y[31]  +  0.025*y[92] + 10*y[6]*y[126] + 10*y[66]*y[126]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;dy_name&amp;lt;-c()
+for (i in 1:(total.clusters*2)) {
+  if(i==1){dy_name&amp;lt;-paste(dy_name,&amp;quot;list(c(dy1&amp;quot;,sep=&amp;quot;&amp;quot;)}
+  else if(i==(total.clusters*2)){dy_name&amp;lt;-paste(dy_name,&amp;quot;,dy&amp;quot;,total.clusters*2,&amp;quot;))}&amp;quot;,sep=&amp;quot;&amp;quot;)}
+  else{dy_name&amp;lt;-paste(dy_name,&amp;quot;,&amp;quot;,paste(&amp;quot;dy&amp;quot;,i,sep=&amp;quot;&amp;quot;),sep=&amp;quot;&amp;quot;)}  
+}
+set.diff.eqn&amp;lt;-c(&amp;quot;f &amp;lt;- function(t, y, parms) {&amp;quot;,dy,dy_name)
+write(set.diff.eqn, file = &amp;quot;set_diff_eqn.R&amp;quot;)
+source(&amp;quot;set_diff_eqn.R&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;solving-differential-equations&#34;&gt;Solving Differential Equations&lt;/h2&gt;
+&lt;h4 id=&#34;initial-condition&#34;&gt;Initial condition&lt;/h4&gt;
+&lt;p&gt;We import preset initial conditions.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# import preset initial condition
+initial_condition&amp;lt;-read.csv(&amp;quot;initial-condition.csv&amp;quot;, header=T, as.is=T) 
+# initial condition: 2J-dimensional vector
+yini&amp;lt;-c(initial_condition$I_ini,initial_condition$S_ini) 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The $2J $ -dimensional vector &lt;code&gt;y_ini&lt;/code&gt; represent the state of the system at initial time.&lt;/p&gt;
+&lt;h4 id=&#34;solution-of-differential-equations&#34;&gt;Solution of differential equations&lt;/h4&gt;
+&lt;p&gt;We create a function to encode the set of differential equations in a form suitable for use as the &lt;code&gt;func&lt;/code&gt; argument to &lt;code&gt;ode&lt;/code&gt; (numerical methods provided by the &lt;code&gt;deSolve&lt;/code&gt; package).&lt;/p&gt;
+&lt;p&gt;Before we run, we need to set what are the timestamps used. &lt;code&gt;times&lt;/code&gt; denote time sequence for which output is wanted.&lt;/p&gt;
+&lt;p&gt;The example below shows that the result will be generated every &lt;code&gt;step.size=1&lt;/code&gt; time unit, from &lt;code&gt;0&lt;/code&gt; to &lt;code&gt;sim.time=100&lt;/code&gt; units.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;sim.time&amp;lt;-100 
+step.size&amp;lt;-1
+times &amp;lt;- seq(from = 0, to = sim.time, by = step.size) # output wanted at these time intervals
+print(times)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   [1]   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
+##  [19]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35
+##  [37]  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53
+##  [55]  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71
+##  [73]  72  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89
+##  [91]  90  91  92  93  94  95  96  97  98  99 100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then compute the fracton of informed vehicles over space and time by applying all into the &lt;code&gt;ODE&lt;/code&gt; solver:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;out &amp;lt;- ode(times = times, y=yini, func = f, parms = NULL) # numerically solve the set of 
+                                                          # differential equations 
+solution&amp;lt;-out[,-1]
+rownames(solution)&amp;lt;-times
+
+# fraction of informed vehicles per cluster
+frac.inf.clust&amp;lt;-solution[,1:total.clusters] 
+# fraction of non-informed vehicles per cluster
+frac.non.inf.clust&amp;lt;-solution[,(1+total.clusters):(2*total.clusters)] 
+colnames(frac.non.inf.clust)&amp;lt;-1:total.clusters 
+
+write.table(frac.inf.clust, file = &amp;quot;fraction_of_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+write.table(frac.non.inf.clust, file = &amp;quot;fraction_of_non_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Row names and Column names of &lt;code&gt;frac.inf.clust&lt;/code&gt; and &lt;code&gt;frac.non.inf.clust&lt;/code&gt; represent time and cluster respectively. For example, &lt;code&gt;frac.inf.clust[rownames(frac.inf.clust)==10,25]&lt;/code&gt; (&lt;code&gt;frac.non.inf.clust[rownames(frac.non.inf.clust)==10,25]&lt;/code&gt;) gives the fraction of informed (non-informed) vehicles at $t=10 $ in cluster 25. Naturally, multiplying the matrix &lt;code&gt;frac.inf.clust&lt;/code&gt; (&lt;code&gt;frac.non.inf.clust&lt;/code&gt;) by the total number of vehicles yields the number of informed (non-informed) vehicles in a given cluster at a given time.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(frac.inf.clust[,1:5]) # View(fraction of informed vehicles at a given time in each cluster)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##              1            2            3            4            5
+## 0 0.0008333330 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+## 1 0.0008570283 2.153502e-05 2.742762e-07 3.458794e-09 4.070297e-11
+## 2 0.0008866241 4.467211e-05 1.129462e-06 2.138115e-08 3.472434e-10
+## 3 0.0009224916 6.983034e-05 2.639884e-06 7.020836e-08 1.509739e-09
+## 4 0.0009649812 9.741283e-05 4.886947e-06 1.667595e-07 4.435826e-09
+## 5 0.0010145891 1.280043e-04 8.000834e-06 3.369939e-07 1.088772e-08
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We export the results to csv files in the current workspace.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;write.table(frac.inf.clust, file = &amp;quot;fraction_of_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+write.table(frac.non.inf.clust, file = &amp;quot;fraction_of_non_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;generating-figures&#34;&gt;Generating Figures&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Fraction of overall informed vehicles over time&lt;/strong&gt; To study the degree of information propagation, we plot the fraction of overall vehicles that are informed at time t. A value of 1 on the y axis indicates that all vehicles in the system receive messages via V2V communication.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;frac.inf.veh&amp;lt;-rowSums(solution[,1:total.clusters]) # fraction of overall vehicles 
+                                                   # that are informed over time.
+plot(times,frac.inf.veh, xlab=&amp;quot;Time&amp;quot;, ylab=&amp;quot;Fraction of informed vehicles&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/post/v2v/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fraction of informed and non-informed vehicles over time per cluster&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;cluster.specific&amp;lt;-10 # determine the specific cluster of interest.
+# fraction of informed vehicles over time in the particular cluster.
+frac.inf.veh.clust&amp;lt;-frac.inf.clust[,cluster.specific] 
+# fraction of non-informed vehicles over time in the particular cluster.
+frac.non.inf.veh.clust&amp;lt;-frac.non.inf.clust[,cluster.specific] 
+
+plot(times, frac.inf.veh.clust, xlab=&amp;quot;Time&amp;quot;, col=&amp;quot;black&amp;quot;, 
+     ylab=paste(&amp;quot;Fraction of (non)informed vehicles in cluster &amp;quot;,cluster.specific,sep = &amp;quot;&amp;quot;))
+par(new=T)
+plot(times, frac.non.inf.veh.clust, xlab=&#39;&#39;, ylab=&#39;&#39;, col=&amp;quot;red&amp;quot;, axes=F)
+par(new=F)
+legend(0, 0.0025, legend=c(&amp;quot;Infomred&amp;quot;,&amp;quot;Non-infomred&amp;quot;), pch = c(1, 1), col=c(&amp;quot;black&amp;quot;,&amp;quot;red&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/post/v2v/index.en_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Writing technical content in Academic</title>
-      <link>https://academic-demo.netlify.app/post/writing-technical-content/</link>
+      <link>https://jungyeol-kim.github.io/post/writing-technical-content/</link>
       <pubDate>Fri, 12 Jul 2019 00:00:00 +0000</pubDate>
-      <guid>https://academic-demo.netlify.app/post/writing-technical-content/</guid>
+      <guid>https://jungyeol-kim.github.io/post/writing-technical-content/</guid>
       <description>&lt;p&gt;Academic is designed to give technical content creators a seamless experience. You can focus on the content and Academic handles the rest.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Highlight your code snippets, take notes on math classes, and draw diagrams from textual representation.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;On this page, you&amp;rsquo;ll find some examples of the types of technical content that can be rendered with Academic.&lt;/p&gt;
@@ -117,7 +838,7 @@ data.head()
 &lt;p&gt;Demo:&lt;/p&gt;
 
 
-&lt;div id=&#34;chart-135964827&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
+&lt;div id=&#34;chart-792483165&#34; class=&#34;chart&#34;&gt;&lt;/div&gt;
 &lt;script&gt;
   (function() {
     let a = setInterval( function() {
@@ -127,7 +848,7 @@ data.head()
       clearInterval( a );
 
       Plotly.d3.json(&#34;./line-chart.json&#34;, function(chart) {
-        Plotly.plot(&#39;chart-135964827&#39;, chart.data, chart.layout, {responsive: true});
+        Plotly.plot(&#39;chart-792483165&#39;, chart.data, chart.layout, {responsive: true});
       });
     }, 500 );
   })();
@@ -355,9 +1076,9 @@ You found me!
     
     <item>
       <title>Display Jupyter Notebooks with Academic</title>
-      <link>https://academic-demo.netlify.app/post/jupyter/</link>
+      <link>https://jungyeol-kim.github.io/post/jupyter/</link>
       <pubDate>Tue, 05 Feb 2019 00:00:00 +0000</pubDate>
-      <guid>https://academic-demo.netlify.app/post/jupyter/</guid>
+      <guid>https://jungyeol-kim.github.io/post/jupyter/</guid>
       <description>&lt;pre&gt;&lt;code class=&#34;language-python&#34;&gt;from IPython.core.display import Image
 Image(&#39;https://www.python.org/static/community_logos/python-logo-master-v3-TM-flattened.png&#39;)
 &lt;/code&gt;&lt;/pre&gt;

@@ -2,29 +2,358 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Projects | Academic</title>
-    <link>https://academic-demo.netlify.app/project/</link>
-      <atom:link href="https://academic-demo.netlify.app/project/index.xml" rel="self" type="application/rss+xml" />
+    <link>https://jungyeol-kim.github.io/project/</link>
+      <atom:link href="https://jungyeol-kim.github.io/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Wed, 27 Apr 2016 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate>
     <image>
-      <url>https://academic-demo.netlify.app/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
+      <url>https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
       <title>Projects</title>
-      <link>https://academic-demo.netlify.app/project/</link>
+      <link>https://jungyeol-kim.github.io/project/</link>
     </image>
     
     <item>
+      <title>Vehicular Messaging Simulation 2</title>
+      <link>https://jungyeol-kim.github.io/project/v2v/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/project/v2v/</guid>
+      <description>&lt;p&gt;V2V technologies bridge two infrastructures: communication and transportation. These infrastructures are interconnected and interdependent. To capture this inter-dependence, which may vary in time and space, we propose a new methodology for modeling information propagation between V2V-enabled vehicles. The model is based on a continuous-time Markov chain which is shown to converge, under appropriate conditions, to a set of clustered epidemiological differential equations. The fraction of vehicles which have received a message, as a function of space and time may be obtained as a solution of these differential equations, which can be solved efficiently, independently of the number of vehicles.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Objective:&lt;/strong&gt; Our goal is to model the spread of V2V messages and obatin the fraction of vehicles which have received a message in arbitrary transportation networks, as a function of space and time, using a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt;.&lt;/p&gt;
+&lt;h2 id=&#34;mobility-and-communicatoin-networks&#34;&gt;Mobility and Communicatoin Networks&lt;/h2&gt;
+&lt;!-- ### Case study: Grid road topology --&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;png&#34; srcset=&#34;
+               /project/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_d761fe09313ded7ce1bfb70ead75e7b9.png 400w,
+               /project/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_3d7d91377923f82872e761feddda6bd6.png 760w,
+               /project/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/v2v/grid_hue793b437dee4b3e55d5b7cacbb9a05f7_222067_d761fe09313ded7ce1bfb70ead75e7b9.png&#34;
+               width=&#34;532&#34;
+               height=&#34;556&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;As an example, we consider the grid road topology with six avenues and streets. In this network, we assume that all roads are two-way and allow vehicles to move in both directions, and a road segment consists of two clusters corresponding to the opposite directional roads. Since two clusters on the same road segment are sufficiently close to each other, we also assume that the vehicles located in these can communicate; there is an undirected edge between the two clusters on the same road segment.&lt;/p&gt;
+&lt;p&gt;Under these settings, we can create three aforementioned files that are essential for the vehicular messaging simulation using clustered epidemiological differential equations. The files I have already created under these assumptions can be downloaded from the following GitHub repository: &lt;a href=&#34;https://github.com/jungyeol-kim/V2X-simulations&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/jungyeol-kim/V2X-simulations&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;However, for any road topologies, vehicle movement patterns, and communication environment, you can use the software code below to automatically generate a set of clustered epidemiological differential equations corresponding to the given conditions, and perform V2V message propagation simulation using the generated differential equations.&lt;/p&gt;
+&lt;p&gt;The following sections describe the software code structure in detail using the sample input files provided based on the above road topology.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Importing edge list of mobility network&lt;/strong&gt;
+We import preset edge list of directed mobility network and corresponding mobility parameter $\lambda_{ij} $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mobility_network&amp;lt;-read.csv(&amp;quot;mobility-network.csv&amp;quot;, header=T, as.is=T)
+mobility_network$lambda_from_to&amp;lt;-mobility_network$routing_prob*mobility_network$lambda
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mobility_network) #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   from_clust to_clust routing_prob lambda lambda_from_to
+## 1          1        2          0.5   0.05          0.025
+## 2          1       36          0.5   0.05          0.025
+## 3          2        3          0.5   0.05          0.025
+## 4          2       41          0.5   0.05          0.025
+## 5          3        4          0.5   0.05          0.025
+## 6          3       46          0.5   0.05          0.025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Importing edge list of communication network&lt;/strong&gt;
+We import preset edge list of undirected communication network and corresponding communication parameter $\beta_{ij} $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;communication_network&amp;lt;-read.csv(&amp;quot;communication-network.csv&amp;quot;, header=T, as.is=T)
+communication_network&amp;lt;-communication_network[order(communication_network$cluster_i,
+                                                   communication_network$cluster_j),]
+rownames(communication_network) &amp;lt;- NULL # reset row names
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(communication_network) #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   cluster_i cluster_j beta_ij
+## 1         1         1      10
+## 2         1        61      10
+## 3         2         2      10
+## 4         2        62      10
+## 5         3         3      10
+## 6         3        63      10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Defining a neighborhood of a cluster&lt;/strong&gt;
+We define a neighborhood of each cluster for both directed mobility network and undirected communication network.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;total.clusters&amp;lt;-120
+mob.edge.out&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# outgoing edges from node i in the mobility network
+mob.edge.out.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# mobility parameter of outgoing edges from node i in the mobility network
+mob.edge.in&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# incoming edges to node i in the mobility network
+mob.edge.in.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# mobility parameter of incoming edges from node i in the mobility network
+comm.edge&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# undirected edges from or to node i in the communication network
+comm.edge.rate&amp;lt;-vector(mode=&#39;list&#39;,length=total.clusters) 
+# communication parameter of undirected edges from or to node i in the communication network
+for (i in 1:total.clusters) {
+  temp1&amp;lt;-mobility_network[mobility_network$from_clust==i,]
+  temp2&amp;lt;-communication_network[communication_network$cluster_i==i,]
+  mob.edge.out[[i]]&amp;lt;-temp1$to_clust
+  mob.edge.out.rate[[i]]&amp;lt;-temp1$lambda_from_to
+  comm.edge[[i]]&amp;lt;-temp2$cluster_j
+  comm.edge.rate[[i]]&amp;lt;-temp2$beta_ij
+  for(j in 1:length(mob.edge.out[[i]])){
+    mob.edge.in[[mob.edge.out[[i]][j]]]&amp;lt;-c(mob.edge.in[[mob.edge.out[[i]][j]]],i)
+    mob.edge.in.rate[[mob.edge.out[[i]][j]]]&amp;lt;-c(mob.edge.in.rate[[mob.edge.out[[i]][j]]],
+                                                mob.edge.out.rate[[i]][j])
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Quick exploration of the result&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.out[[1]] #View(end point of outgoing edges from a given cluster 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  2 36
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.out.rate[[1]] #View(mobility rates corresponding to outgoing edges from a given cluster 1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.025 0.025
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Endpoints of outgoing edges for a given cluster (vertex) 1 are cluster 2 and 36.&lt;/li&gt;
+&lt;li&gt;Mobility rate from cluster 1 to 2 is 0.25, and mobility rate from 1 to 36 is also 0.25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.in[[7]] #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  6 36 97
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.edge.in.rate[[7]] #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 0.01666667 0.01666667 0.01666667
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Incoming edges to cluster 7 come from cluster 6, 36, and 97.&lt;/li&gt;
+&lt;li&gt;Mobility rate from cluster 6 to 7 is 0.01666667, mobility rate from 36 to 7 is 0.25, and mobility rate from 97 to 7 is 0.25.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.edge[[25]] #View(mobility_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 25 85
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.edge.rate[[25]] #View(communication_network)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 10 10
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;Vehicles in cluster 25 can communicate with other vehicles in the same cluster 25, and also communicate with vehicles in cluster 85. (intra- and inter-cluster communication)&lt;/li&gt;
+&lt;li&gt;Intra-cluster communication parameter $\beta_{25,25} $ is 10, and inter-cluster communication parameter $\beta_{25,85} = \beta_{85,25} $ corresponding to communication between cluster 10 and 70 is also 10.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;generation-of-differential-equations&#34;&gt;Generation of Differential Equations&lt;/h2&gt;
+&lt;p&gt;Recall that under the conditions of our model, for a given choice of initial conditions $\bigl({\bf I}(0), {\bf S}(0)\bigr) $, the time-evolution, $\bigl({\bf I}(t), {\bf S}(t)\bigr) $, of the distribution of the asymptotic fraction of informed and non-informed vehicles across clusters is governed by the following system of ordinary differential equations:&lt;/p&gt;
+&lt;p&gt;$$\dot{I}_j(t)=-\sum_{k\neq j}^{J} \lambda^I_{jk}\left({\bf{I,S}}\right) \cdot I_j + \sum_{k=1}^{J}\beta_{kj} \cdot I_k\cdot S_j  + \sum_{k\neq j}^{J} \lambda^I_{kj}\left({\bf{I,S}}\right)\cdot I_k \qquad (j=1,2,\dots,J), $$
+$$ \dot{S}_j(t)=-\sum_{k\neq j}^{J}\lambda^S_{jk}\left({\bf{I,S}}\right) \cdot S_j -  \sum_{k=1}^{J}\beta_{kj} \cdot I_k \cdot S_j  + \sum_{k\neq j}^{J}\lambda^S_{kj}\left({\bf{I,S}}\right) \cdot S_k \qquad (j=1,2,\dots,J). $$&lt;/p&gt;
+&lt;!-- $$ \dot{I}_j(t)=-\sum_{k\neq j}^{J} \lambda^I_{jk}\left({\bf{I,S}}\right) \cdot I_j + \sum_{k=1}^{J}\beta_{kj} \cdot I_k\cdot S_j  + \sum_{k\neq j}^{J} \lambda^I_{kj}\left({\bf{I,S}}\right)\cdot I_k \qquad (j=1,2,\dots,J), $$  --&gt;
+&lt;!-- $$ \dot{S}_j(t)=-\sum_{k\neq j}^{J}\lambda^S_{jk}\left({\bf{I,S}}\right) \cdot S_j -  \sum_{k=1}^{J}\beta_{kj} \cdot I_k \cdot S_j  + \sum_{k\neq j}^{J}\lambda^S_{kj}\left({\bf{I,S}}\right) \cdot S_k \qquad (j=1,2,\dots,J). $$ --&gt;
+&lt;p&gt;We now create a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt; for the given mobility and communicatoin networks. The number of variables and the total number of differential equations are $2J $ each (recall that $J $ is the total number of clusters). The $2J $-dimensional vector $(y_1,y_2,&amp;hellip;,y_J; y_{J+1},y_{J+2},&amp;hellip;,y_{2J})=(I_1,I_2,&amp;hellip;,I_J; S_1,S_2,&amp;hellip;,S_J) $ represent the instantaneous state of the system, semicolon and extra spacing have been added merely for visual separation of informed and non-informed vehicular counts in the various clusters.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;We create the first summation term on right hand side&lt;/strong&gt;
+The first summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the outgoing mobility from cluster $j $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.out.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  mob.out.text.temp.1&amp;lt;-c();  mob.out.text.temp.2&amp;lt;-c();
+  mob.out.text.temp.3&amp;lt;-c();  mob.out.text.temp.4&amp;lt;-c()
+  for(j in 1:length(mob.edge.out[[i]])){
+    mob.out.text.temp.1&amp;lt;-paste(&amp;quot;- &amp;quot;,mob.edge.out.rate[[i]][j],&amp;quot;*y[&amp;quot;,i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.out.text.temp.2&amp;lt;-paste(mob.out.text.temp.2,mob.out.text.temp.1,sep=&amp;quot; &amp;quot;)
+    mob.out.text.temp.3&amp;lt;-paste(&amp;quot;- &amp;quot;,mob.edge.out.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                               total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.out.text.temp.4&amp;lt;-paste(mob.out.text.temp.4,mob.out.text.temp.3,sep=&amp;quot; &amp;quot;)
+  }
+  mob.out.text[i]&amp;lt;-mob.out.text.temp.2
+  mob.out.text[total.clusters+i]&amp;lt;-mob.out.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mob.out.text) #View(the first summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot; - 0.025*y[1] - 0.025*y[1]&amp;quot;                                     
+## [2] &amp;quot; - 0.025*y[2] - 0.025*y[2]&amp;quot;                                     
+## [3] &amp;quot; - 0.025*y[3] - 0.025*y[3]&amp;quot;                                     
+## [4] &amp;quot; - 0.025*y[4] - 0.025*y[4]&amp;quot;                                     
+## [5] &amp;quot; - 0.05*y[5]&amp;quot;                                                   
+## [6] &amp;quot; - 0.01666666665*y[6] - 0.01666666665*y[6] - 0.01666666665*y[6]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We create the second summation term on right hand side&lt;/strong&gt;
+The second summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the intra- and inter-communication in cluster $j $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;comm.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  comm.text.temp.1&amp;lt;-c();  comm.text.temp.2&amp;lt;-c();
+  comm.text.temp.3&amp;lt;-c();  comm.text.temp.4&amp;lt;-c()
+  for(j in 1:length(comm.edge[[i]])){
+    comm.text.temp.1&amp;lt;-paste(comm.edge.rate[[i]][j],&amp;quot;*y[&amp;quot;,comm.edge[[i]][j],&amp;quot;]*y[&amp;quot;,
+                            total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    comm.text.temp.2&amp;lt;-paste(comm.text.temp.2,&amp;quot; + &amp;quot;,comm.text.temp.1,sep=&amp;quot;&amp;quot;)
+    comm.text.temp.3&amp;lt;-paste(comm.edge.rate[[i]][j],&amp;quot;*y[&amp;quot;,comm.edge[[i]][j],&amp;quot;]*y[&amp;quot;,
+                            total.clusters+i,&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    comm.text.temp.4&amp;lt;-paste(comm.text.temp.4,&amp;quot; - &amp;quot;,comm.text.temp.3,sep=&amp;quot;&amp;quot;)
+  }
+  comm.text[i]&amp;lt;-comm.text.temp.2
+  comm.text[total.clusters+i]&amp;lt;-comm.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(comm.text) #View(the second summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot; + 10*y[1]*y[121] + 10*y[61]*y[121]&amp;quot; &amp;quot; + 10*y[2]*y[122] + 10*y[62]*y[122]&amp;quot;
+## [3] &amp;quot; + 10*y[3]*y[123] + 10*y[63]*y[123]&amp;quot; &amp;quot; + 10*y[4]*y[124] + 10*y[64]*y[124]&amp;quot;
+## [5] &amp;quot; + 10*y[5]*y[125] + 10*y[65]*y[125]&amp;quot; &amp;quot; + 10*y[6]*y[126] + 10*y[66]*y[126]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We create the third summation term on right hand side&lt;/strong&gt;
+The third summation terms on the RHS of the $j $ -th equation ($ \dot{I}_j $) and the $J+j $ -th equation $(\dot{S}_j) $ is related to the incoming mobility to cluster $j $&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;mob.in.text&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for(i in 1:total.clusters){
+  mob.in.text.temp.1&amp;lt;-c();  mob.in.text.temp.2&amp;lt;-c();
+  mob.in.text.temp.3&amp;lt;-c();  mob.in.text.temp.4&amp;lt;-c()
+  for(j in 1:length(mob.edge.in[[i]])){
+    mob.in.text.temp.1&amp;lt;-paste(mob.edge.in.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                              mob.edge.in[[i]][j],&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.in.text.temp.2&amp;lt;-paste(mob.in.text.temp.2,&amp;quot; + &amp;quot;,mob.in.text.temp.1,sep=&amp;quot; &amp;quot;)
+    mob.in.text.temp.3&amp;lt;-paste(mob.edge.in.rate[[i]][j],&amp;quot;*y[&amp;quot;,
+                              total.clusters+mob.edge.in[[i]][j],&amp;quot;]&amp;quot;, sep=&amp;quot;&amp;quot;)
+    mob.in.text.temp.4&amp;lt;-paste(mob.in.text.temp.4,&amp;quot; + &amp;quot;,mob.in.text.temp.3,sep=&amp;quot; &amp;quot;)
+  }
+  mob.in.text[i]&amp;lt;-mob.in.text.temp.2
+  mob.in.text[total.clusters+i]&amp;lt;-mob.in.text.temp.4
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(mob.in.text) #View(the third summation term on the RHS of each differential equation)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;  +  0.05*y[91]&amp;quot;                  &amp;quot;  +  0.025*y[1]  +  0.025*y[96]&amp;quot; 
+## [3] &amp;quot;  +  0.025*y[2]  +  0.025*y[101]&amp;quot; &amp;quot;  +  0.025*y[3]  +  0.025*y[106]&amp;quot;
+## [5] &amp;quot;  +  0.025*y[4]  +  0.025*y[111]&amp;quot; &amp;quot;  +  0.025*y[31]  +  0.025*y[92]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;We now combine the all terms to create the complete set of differential equations&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;dy&amp;lt;-vector(mode=&#39;character&#39;,length=total.clusters*2)
+for (i in 1:(total.clusters*2)) {
+   dy[i]&amp;lt;-paste(&amp;quot;dy&amp;quot;,i,&amp;quot; &amp;lt;- &amp;quot;,mob.out.text[i],mob.in.text[i],comm.text[i],sep=&amp;quot;&amp;quot;)
+} 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(dy) # View(complete set of differential equations)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;dy1 &amp;lt;-  - 0.025*y[1] - 0.025*y[1]  +  0.05*y[91] + 10*y[1]*y[121] + 10*y[61]*y[121]&amp;quot;                                                      
+## [2] &amp;quot;dy2 &amp;lt;-  - 0.025*y[2] - 0.025*y[2]  +  0.025*y[1]  +  0.025*y[96] + 10*y[2]*y[122] + 10*y[62]*y[122]&amp;quot;                                      
+## [3] &amp;quot;dy3 &amp;lt;-  - 0.025*y[3] - 0.025*y[3]  +  0.025*y[2]  +  0.025*y[101] + 10*y[3]*y[123] + 10*y[63]*y[123]&amp;quot;                                     
+## [4] &amp;quot;dy4 &amp;lt;-  - 0.025*y[4] - 0.025*y[4]  +  0.025*y[3]  +  0.025*y[106] + 10*y[4]*y[124] + 10*y[64]*y[124]&amp;quot;                                     
+## [5] &amp;quot;dy5 &amp;lt;-  - 0.05*y[5]  +  0.025*y[4]  +  0.025*y[111] + 10*y[5]*y[125] + 10*y[65]*y[125]&amp;quot;                                                   
+## [6] &amp;quot;dy6 &amp;lt;-  - 0.01666666665*y[6] - 0.01666666665*y[6] - 0.01666666665*y[6]  +  0.025*y[31]  +  0.025*y[92] + 10*y[6]*y[126] + 10*y[66]*y[126]&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;dy_name&amp;lt;-c()
+for (i in 1:(total.clusters*2)) {
+  if(i==1){dy_name&amp;lt;-paste(dy_name,&amp;quot;list(c(dy1&amp;quot;,sep=&amp;quot;&amp;quot;)}
+  else if(i==(total.clusters*2)){dy_name&amp;lt;-paste(dy_name,&amp;quot;,dy&amp;quot;,total.clusters*2,&amp;quot;))}&amp;quot;,sep=&amp;quot;&amp;quot;)}
+  else{dy_name&amp;lt;-paste(dy_name,&amp;quot;,&amp;quot;,paste(&amp;quot;dy&amp;quot;,i,sep=&amp;quot;&amp;quot;),sep=&amp;quot;&amp;quot;)}  
+}
+set.diff.eqn&amp;lt;-c(&amp;quot;f &amp;lt;- function(t, y, parms) {&amp;quot;,dy,dy_name)
+write(set.diff.eqn, file = &amp;quot;set_diff_eqn.R&amp;quot;)
+source(&amp;quot;set_diff_eqn.R&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;solving-differential-equations&#34;&gt;Solving Differential Equations&lt;/h2&gt;
+&lt;h4 id=&#34;initial-condition&#34;&gt;Initial condition&lt;/h4&gt;
+&lt;p&gt;We import preset initial conditions.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# import preset initial condition
+initial_condition&amp;lt;-read.csv(&amp;quot;initial-condition.csv&amp;quot;, header=T, as.is=T) 
+# initial condition: 2J-dimensional vector
+yini&amp;lt;-c(initial_condition$I_ini,initial_condition$S_ini) 
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The $2J $ -dimensional vector &lt;code&gt;y_ini&lt;/code&gt; represent the state of the system at initial time.&lt;/p&gt;
+&lt;h4 id=&#34;solution-of-differential-equations&#34;&gt;Solution of differential equations&lt;/h4&gt;
+&lt;p&gt;We create a function to encode the set of differential equations in a form suitable for use as the &lt;code&gt;func&lt;/code&gt; argument to &lt;code&gt;ode&lt;/code&gt; (numerical methods provided by the &lt;code&gt;deSolve&lt;/code&gt; package).&lt;/p&gt;
+&lt;p&gt;Before we run, we need to set what are the timestamps used. &lt;code&gt;times&lt;/code&gt; denote time sequence for which output is wanted.&lt;/p&gt;
+&lt;p&gt;The example below shows that the result will be generated every &lt;code&gt;step.size=1&lt;/code&gt; time unit, from &lt;code&gt;0&lt;/code&gt; to &lt;code&gt;sim.time=100&lt;/code&gt; units.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;sim.time&amp;lt;-100 
+step.size&amp;lt;-1
+times &amp;lt;- seq(from = 0, to = sim.time, by = step.size) # output wanted at these time intervals
+print(times)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   [1]   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
+##  [19]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34  35
+##  [37]  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51  52  53
+##  [55]  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68  69  70  71
+##  [73]  72  73  74  75  76  77  78  79  80  81  82  83  84  85  86  87  88  89
+##  [91]  90  91  92  93  94  95  96  97  98  99 100
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then compute the fracton of informed vehicles over space and time by applying all into the &lt;code&gt;ODE&lt;/code&gt; solver:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;out &amp;lt;- ode(times = times, y=yini, func = f, parms = NULL) # numerically solve the set of 
+                                                          # differential equations 
+solution&amp;lt;-out[,-1]
+rownames(solution)&amp;lt;-times
+
+# fraction of informed vehicles per cluster
+frac.inf.clust&amp;lt;-solution[,1:total.clusters] 
+# fraction of non-informed vehicles per cluster
+frac.non.inf.clust&amp;lt;-solution[,(1+total.clusters):(2*total.clusters)] 
+colnames(frac.non.inf.clust)&amp;lt;-1:total.clusters 
+
+write.table(frac.inf.clust, file = &amp;quot;fraction_of_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+write.table(frac.non.inf.clust, file = &amp;quot;fraction_of_non_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Row names and Column names of &lt;code&gt;frac.inf.clust&lt;/code&gt; and &lt;code&gt;frac.non.inf.clust&lt;/code&gt; represent time and cluster respectively. For example, &lt;code&gt;frac.inf.clust[rownames(frac.inf.clust)==10,25]&lt;/code&gt; (&lt;code&gt;frac.non.inf.clust[rownames(frac.non.inf.clust)==10,25]&lt;/code&gt;) gives the fraction of informed (non-informed) vehicles at $t=10 $ in cluster 25. Naturally, multiplying the matrix &lt;code&gt;frac.inf.clust&lt;/code&gt; (&lt;code&gt;frac.non.inf.clust&lt;/code&gt;) by the total number of vehicles yields the number of informed (non-informed) vehicles in a given cluster at a given time.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;head(frac.inf.clust[,1:5]) # View(fraction of informed vehicles at a given time in each cluster)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##              1            2            3            4            5
+## 0 0.0008333330 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00
+## 1 0.0008570283 2.153502e-05 2.742762e-07 3.458794e-09 4.070297e-11
+## 2 0.0008866241 4.467211e-05 1.129462e-06 2.138115e-08 3.472434e-10
+## 3 0.0009224916 6.983034e-05 2.639884e-06 7.020836e-08 1.509739e-09
+## 4 0.0009649812 9.741283e-05 4.886947e-06 1.667595e-07 4.435826e-09
+## 5 0.0010145891 1.280043e-04 8.000834e-06 3.369939e-07 1.088772e-08
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We export the results to csv files in the current workspace.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;write.table(frac.inf.clust, file = &amp;quot;fraction_of_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+write.table(frac.non.inf.clust, file = &amp;quot;fraction_of_non_informed_vehicles_per_cluster.csv&amp;quot;,
+            row.names=TRUE,col.names=TRUE, sep=&amp;quot;,&amp;quot;) # export a matrix to a file.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;generating-figures&#34;&gt;Generating Figures&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;Fraction of overall informed vehicles over time&lt;/strong&gt; To study the degree of information propagation, we plot the fraction of overall vehicles that are informed at time t. A value of 1 on the y axis indicates that all vehicles in the system receive messages via V2V communication.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;frac.inf.veh&amp;lt;-rowSums(solution[,1:total.clusters]) # fraction of overall vehicles 
+                                                   # that are informed over time.
+plot(times,frac.inf.veh, xlab=&amp;quot;Time&amp;quot;, ylab=&amp;quot;Fraction of informed vehicles&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/v2v/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Fraction of informed and non-informed vehicles over time per cluster&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;cluster.specific&amp;lt;-10 # determine the specific cluster of interest.
+# fraction of informed vehicles over time in the particular cluster.
+frac.inf.veh.clust&amp;lt;-frac.inf.clust[,cluster.specific] 
+# fraction of non-informed vehicles over time in the particular cluster.
+frac.non.inf.veh.clust&amp;lt;-frac.non.inf.clust[,cluster.specific] 
+
+plot(times, frac.inf.veh.clust, xlab=&amp;quot;Time&amp;quot;, col=&amp;quot;black&amp;quot;, 
+     ylab=paste(&amp;quot;Fraction of (non)informed vehicles in cluster &amp;quot;,cluster.specific,sep = &amp;quot;&amp;quot;))
+par(new=T)
+plot(times, frac.non.inf.veh.clust, xlab=&#39;&#39;, ylab=&#39;&#39;, col=&amp;quot;red&amp;quot;, axes=F)
+par(new=F)
+legend(0, 0.0025, legend=c(&amp;quot;Infomred&amp;quot;,&amp;quot;Non-infomred&amp;quot;), pch = c(1, 1), col=c(&amp;quot;black&amp;quot;,&amp;quot;red&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/v2v/index.en_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
       <title>External Project</title>
-      <link>https://academic-demo.netlify.app/project/external-project/</link>
+      <link>https://jungyeol-kim.github.io/project/external-project/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>https://academic-demo.netlify.app/project/external-project/</guid>
+      <guid>https://jungyeol-kim.github.io/project/external-project/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Internal Project</title>
-      <link>https://academic-demo.netlify.app/project/internal-project/</link>
+      <link>https://jungyeol-kim.github.io/project/internal-project/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>https://academic-demo.netlify.app/project/internal-project/</guid>
+      <guid>https://jungyeol-kim.github.io/project/internal-project/</guid>
       <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
 &lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
 &lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
