@@ -88,48 +88,6 @@
     </item>
     
     <item>
-      <title>Lasso and Estimation Bound</title>
-      <link>https://jungyeol-kim.github.io/project/lasso/</link>
-      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/lasso/</guid>
-      <description>&lt;p&gt;One of the types of errors that we are concerned with in Lasso regression is the prediction loss: $ ||X (\hat{\beta}-\beta^{\star})||^2_2. $
-For the model $ Y=X\beta^{\star}+\epsilon $, where $ \epsilon \sim \text{subG}(\sigma^2) $, the Lasso solution is&lt;/p&gt;
-&lt;p&gt;$$ \hat{\beta} := \hat{\beta}_{Lasso} \in argmin_{\beta} \frac{1}{2n} ||Y-X\beta||^2 +\lambda_n ||\beta||_1. $$
-&lt;strong&gt;Theorem&lt;/strong&gt;: Let A be the event {$ \lambda_n \geq n^{-1} ||X^T \epsilon ||_{\infty} $}. If A holds, then&lt;/p&gt;
-&lt;p&gt;$$ MSE(\hat{\beta}) = \frac{||X (\hat{\beta}-\beta^{\star})||^2}{n} \leq 4 ||\beta^{\star}||_1 \lambda_n $$&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Proof&lt;/strong&gt;: By the definition of Lasso, we have&lt;/p&gt;
-&lt;p&gt;\begin{align}
-\frac{1}{2n} ||Y-X\hat{\beta}||_2^2 + \lambda_n ||\hat{\beta}||_1 \leq \frac{1}{2n} ||Y-X{\beta}^{\star}||^2 + \lambda_n ||{\beta}^{\star}||_1
-\end{align}&lt;/p&gt;
-&lt;p&gt;We use true model equation $ Y=X{\beta}^{\star}+\epsilon $. By substituting $ Y $ for $ X{\beta}^{\star}+\epsilon $, we have&lt;/p&gt;
-&lt;p&gt;\begin{align}
-\frac{1}{2n} ||X (\hat{\beta}-\beta^{\star})||_2^2 &amp;amp; \leq \frac{\epsilon^\top X (\hat{\beta}-\beta^{\star})}{n} + \lambda_n (||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
-&amp;amp; (\text{by Holder&amp;rsquo;s Inequality, }\epsilon^\top X (\hat{\beta}-\beta^{\star}) = |\sum_{i=1}^{d}(\epsilon^\top X)_i (\hat{\beta}-\beta^{\star})_i|  \leq ||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1) \nonumber \\
-&amp;amp; \leq \frac{||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1}{n} + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
-&amp;amp; (\text{by Triangle Inequality, }||\hat{\beta}-\beta^{\star}||_1 \leq ||\hat{\beta}||_1 + ||-\beta^{\star}||_1 = ||\hat{\beta}||_1 + ||\beta^{\star}||_1) \nonumber \\&lt;br&gt;
-&amp;amp; \leq \frac{||X^\top \epsilon||_{\infty}}{n} (||\hat{\beta}||_1 + ||\beta^{\star}||_1) + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
-&amp;amp; = ||\hat{\beta}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n)}_{\leq 0}} + ||{\beta}^{\star}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  + \lambda_n)}_{\leq 2\lambda_n}} \\&lt;br&gt;
-&amp;amp; (\because \frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n \leq 0 \text{ by the condition of the Theorem 1}) \nonumber\\&lt;br&gt;
-&amp;amp; \leq ||\beta^{\star}||_1 \cdot 2\lambda_n
-\label{eqn:2}
-\end{align}&lt;/p&gt;
-&lt;p&gt;So we see the last expression $ \frac{1}{n} ||X (\hat{\beta}-\beta^{\star})||_2^2 \leq 4 ||\beta^{\star}||_1 \lambda_n $. This finishes the proof.&lt;/p&gt;
-&lt;!-- ## Probability bound of $ P\left(\frac{||X^\top \epsilon||\_{\infty}}{n}\geq t\right) $ on page 5 --&gt;
-&lt;!-- \begin{align}  --&gt;
-&lt;!--     P\left(\frac{||X^\top \epsilon||\_{\infty}}{n}\geq t\right) &amp;= P\left(\frac{\max\_{j}|X\_j^\top \epsilon|}{n}\geq t\right) \\\\ --&gt;
-&lt;!--     &amp;\leq \sum\_{j=1}^d P\left(\frac{|X\_j^\top \epsilon|}{n}\geq t\right) \\\\ --&gt;
-&lt;!--     &amp;\leq \sum\_{j=1}^d {\underbrace{P\left(\frac{X\_j^\top \epsilon}{n}\geq t\right)}\_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right]}} + {\underbrace{P\left(\frac{X\_j^\top \epsilon}{n}\leq -t\right)}\_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right]}} \\\\ --&gt;
-&lt;!--     &amp; (\text{by the two last results for sub-Gaussian r.v. on page 3})\nonumber\\\\ --&gt;
-&lt;!--     &amp;\leq \sum\_{j=1}^d 2 \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right] \quad  \\\\ --&gt;
-&lt;!--     &amp;\leq 2d \exp\left[\frac{-t^2n^2}{2\sigma^2 nC} \right] \quad  (\text{by the assumption, } \max\_j||X\_j||\leq \sqrt{nC})\\\\ --&gt;
-&lt;!--     &amp;=\exp\left[\frac{-t^2n}{2\sigma^2 C} + \log 2d\right] --&gt;
-&lt;!--     \label{eqn:3} --&gt;
-&lt;!-- \end{align} --&gt;
-&lt;!-- This finishes the proof. --&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Modeling the Impact of Traffic Signals on V2V Information Flow</title>
       <link>https://jungyeol-kim.github.io/project/traffic-signal/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
