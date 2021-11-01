@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Projects | Academic</title>
+    <title>Projects | Jungyeol Kim</title>
     <link>https://jungyeol-kim.github.io/project/</link>
       <atom:link href="https://jungyeol-kim.github.io/project/index.xml" rel="self" type="application/rss+xml" />
     <description>Projects</description>
@@ -13,7 +13,622 @@
     </image>
     
     <item>
-      <title>Vehicular Messaging Simulation 2</title>
+      <title>Lasso and Estimation Bound</title>
+      <link>https://jungyeol-kim.github.io/project/lasso/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/project/lasso/</guid>
+      <description>&lt;p&gt;One of the types of errors that we are concerned with in Lasso regression is the prediction loss: $ ||X (\hat{\beta}-\beta^{\star})||^2_2. $
+For the model $ Y=X\beta^{\star}+\epsilon $, where $ \epsilon \sim \text{subG}(\sigma^2) $, the Lasso solution is&lt;/p&gt;
+&lt;p&gt;$$ \hat{\beta} := \hat{\beta}_{Lasso} \in argmin_{\beta} \frac{1}{2n} ||Y-X\beta||^2 +\lambda_n ||\beta||_1. $$
+&lt;strong&gt;Theorem&lt;/strong&gt;: Let A be the event {$ \lambda_n \geq n^{-1} ||X^T \epsilon ||_{\infty} $}. If A holds, then&lt;/p&gt;
+&lt;p&gt;$$ MSE(\hat{\beta}) = \frac{||X (\hat{\beta}-\beta^{\star})||^2}{n} \leq 4 ||\beta^{\star}||_1 \lambda_n $$&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Proof&lt;/strong&gt;: By the definition of Lasso, we have&lt;/p&gt;
+&lt;p&gt;\begin{align}
+\frac{1}{2n} ||Y-X\hat{\beta}||_2^2 + \lambda_n ||\hat{\beta}||_1 \leq \frac{1}{2n} ||Y-X{\beta}^{\star}||^2 + \lambda_n ||{\beta}^{\star}||_1
+\end{align}&lt;/p&gt;
+&lt;p&gt;We use true model equation $ Y=X{\beta}^{\star}+\epsilon $. By substituting $ Y $ for $ X{\beta}^{\star}+\epsilon $, we have&lt;/p&gt;
+&lt;p&gt;\begin{align}
+\frac{1}{2n} ||X (\hat{\beta}-\beta^{\star})||_2^2 &amp;amp; \leq \frac{\epsilon^\top X (\hat{\beta}-\beta^{\star})}{n} + \lambda_n (||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; (\text{by Holder&amp;rsquo;s Inequality, }\epsilon^\top X (\hat{\beta}-\beta^{\star}) = |\sum_{i=1}^{d}(\epsilon^\top X)_i (\hat{\beta}-\beta^{\star})_i|  \leq ||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1) \nonumber \\
+&amp;amp; \leq \frac{||\epsilon^\top X||_{\infty} ||\hat{\beta}-\beta^{\star}||_1}{n} + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; (\text{by Triangle Inequality, }||\hat{\beta}-\beta^{\star}||_1 \leq ||\hat{\beta}||_1 + ||-\beta^{\star}||_1 = ||\hat{\beta}||_1 + ||\beta^{\star}||_1) \nonumber \\&lt;br&gt;
+&amp;amp; \leq \frac{||X^\top \epsilon||_{\infty}}{n} (||\hat{\beta}||_1 + ||\beta^{\star}||_1) + \lambda_n(||\beta^{\star}||_1-||\hat{\beta}||_1)\\&lt;br&gt;
+&amp;amp; = ||\hat{\beta}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n)}_{\leq 0}} + ||{\beta}^{\star}||_1 {\underbrace{(\frac{||X^\top \epsilon||_{\infty}}{n}  + \lambda_n)}_{\leq 2\lambda_n}} \\&lt;br&gt;
+&amp;amp; (\because \frac{||X^\top \epsilon||_{\infty}}{n}  - \lambda_n \leq 0 \text{ by the condition of the Theorem 1}) \nonumber\\&lt;br&gt;
+&amp;amp; \leq ||\beta^{\star}||_1 \cdot 2\lambda_n
+\label{eqn:2}
+\end{align}&lt;/p&gt;
+&lt;p&gt;So we see the last expression $ \frac{1}{n} ||X (\hat{\beta}-\beta^{\star})||_2^2 \leq 4 ||\beta^{\star}||_1 \lambda_n $. This finishes the proof.&lt;/p&gt;
+&lt;!-- ## Probability bound of $ P\left(\frac{||X^\top \epsilon||\_{\infty}}{n}\geq t\right) $ on page 5 --&gt;
+&lt;!-- \begin{align}  --&gt;
+&lt;!--     P\left(\frac{||X^\top \epsilon||\_{\infty}}{n}\geq t\right) &amp;= P\left(\frac{\max\_{j}|X\_j^\top \epsilon|}{n}\geq t\right) \\\\ --&gt;
+&lt;!--     &amp;\leq \sum\_{j=1}^d P\left(\frac{|X\_j^\top \epsilon|}{n}\geq t\right) \\\\ --&gt;
+&lt;!--     &amp;\leq \sum\_{j=1}^d {\underbrace{P\left(\frac{X\_j^\top \epsilon}{n}\geq t\right)}\_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right]}} + {\underbrace{P\left(\frac{X\_j^\top \epsilon}{n}\leq -t\right)}\_{\leq \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right]}} \\\\ --&gt;
+&lt;!--     &amp; (\text{by the two last results for sub-Gaussian r.v. on page 3})\nonumber\\\\ --&gt;
+&lt;!--     &amp;\leq \sum\_{j=1}^d 2 \exp\left[\frac{-t^2n^2}{2\sigma^2||X\_j||\_2^2} \right] \quad  \\\\ --&gt;
+&lt;!--     &amp;\leq 2d \exp\left[\frac{-t^2n^2}{2\sigma^2 nC} \right] \quad  (\text{by the assumption, } \max\_j||X\_j||\leq \sqrt{nC})\\\\ --&gt;
+&lt;!--     &amp;=\exp\left[\frac{-t^2n}{2\sigma^2 C} + \log 2d\right] --&gt;
+&lt;!--     \label{eqn:3} --&gt;
+&lt;!-- \end{align} --&gt;
+&lt;!-- This finishes the proof. --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data</title>
+      <link>https://jungyeol-kim.github.io/project/sparse-pca/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/project/sparse-pca/</guid>
+      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+&lt;p&gt;We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;1&#34; srcset=&#34;
+               /project/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_7079b1b9dc62ef3781600183f8baf2c8.png 400w,
+               /project/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_1ef83d034dc521d073c2b4d5c107a79a.png 760w,
+               /project/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig1_hu6311e9b8b231232ec297ed768d78addb_161438_7079b1b9dc62ef3781600183f8baf2c8.png&#34;
+               width=&#34;760&#34;
+               height=&#34;348&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;2&#34; srcset=&#34;
+               /project/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_50dd85c605eaf889f737ed086f704599.png 400w,
+               /project/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_c5189675adc7aa71c1df14f46cd2c07d.png 760w,
+               /project/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig2_hu10badb22ba514df09c9a161ab1a3b53f_106954_50dd85c605eaf889f737ed086f704599.png&#34;
+               width=&#34;760&#34;
+               height=&#34;346&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+Throughout this report, we use &lt;em&gt;primary tissues (SMTS)&lt;/em&gt; rather than tissues (SMTSD) for simple visualization.&lt;/p&gt;
+&lt;h2 id=&#34;principal-component-analysis-pca&#34;&gt;Principal Component Analysis (PCA)&lt;/h2&gt;
+&lt;p&gt;We aim to see if the standard PCA can reveal the difference in gene expressions among different tissue types. We first perform PCA and compute the principal components.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021) 
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+a&amp;lt;-summary(pca.results)$importance[2,1:35]
+b&amp;lt;-summary(pca.results)$importance[3,1:35]
+pc_var_expd&amp;lt;-data.frame(&#39;PC&#39;=1:length(a), &#39;pct&#39;=a, &#39;pct_cum&#39;=b, stringsAsFactors = F)
+
+ggplot(data = pc_var_expd, aes(x = as.factor(PC))) +
+  geom_col(aes(y = pct)) +
+  geom_line(aes(y = pct_cum, group = 1)) +
+  geom_hline(yintercept = 0.75, linetype=&amp;quot;dashed&amp;quot;, color = &amp;quot;gray50&amp;quot;, size=0.5) +
+  geom_point(aes(y = pct_cum)) +
+  labs(x = &amp;quot;Principal component&amp;quot;, y = &amp;quot;Proportion of Variance&amp;quot;) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75), limits = c(0, 0.755)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 18), axis.title.x=element_text(size=24, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 18), axis.title.y=element_text(size=24, face=&amp;quot;bold&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;3&#34; srcset=&#34;
+               /project/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1d143cdb005916fb3926ee80859cbd32.png 400w,
+               /project/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_0d77f2e6c44903a891f51d7eb395e10d.png 760w,
+               /project/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig3_hu55518370481f7f48ca223c2b2933fe0d_106349_1d143cdb005916fb3926ee80859cbd32.png&#34;
+               width=&#34;760&#34;
+               height=&#34;326&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;We notice is that the first 35 components explains over $75% $ of variance. &lt;em&gt;We can effectively reduce dimensionality from $19248 $ to $35 $ while only loosing about $25% $ of variance.&lt;/em&gt; We also notice that we can actually explain over $28% $ of variance with just the first two components and over $26% $ of variance with just the first and the third components. The pairwise scatter plot of principal components are displayed as follows. Figure 4(b) shows that, with only two components, we can clearly see separation of Brain, Pituitary, Blood, and Testis tissues from all others.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;temp&amp;lt;-data.frame(pca.results$x, &#39;SMTS&#39;=as.factor(final.data.orig$SMTS), &#39;SMTSD&#39;=as.factor(final.data.orig$SMTSD))
+
+gg_color_hue &amp;lt;- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+cols = gg_color_hue(length(levels(temp$SMTS)))
+fills = gg_color_hue(length(levels(temp$SMTS)))
+alphas = rep(0.2,length(levels(temp$SMTS)))
+
+# SMTS.select&amp;lt;-levels(temp$SMTS)
+SMTS.select&amp;lt;-c(&amp;quot;Brain&amp;quot;, &amp;quot;Blood&amp;quot;, &amp;quot;Testis&amp;quot;, &amp;quot;Pituitary&amp;quot;)
+
+c.color&amp;lt;-which(!levels(temp$SMTS) %in% SMTS.select)
+cols[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+fills[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+alphas[c.color]&amp;lt;-0
+
+means &amp;lt;- temp %&amp;gt;%
+  filter(SMTS %in% SMTS.select) %&amp;gt;%
+  group_by(SMTS) %&amp;gt;%
+  summarise(mean_PC1 = mean(PC1),
+            mean_PC3 = mean(PC3)) 
+
+ggplot(temp, aes(x = PC1, y = PC3, label = SMTS)) + 
+  geom_point(aes(colour = SMTS), size=0.5, alpha=0.7, show.legend = FALSE) +
+  stat_ellipse(aes(fill = SMTS, alpha = SMTS), level = .95, geom = &amp;quot;polygon&amp;quot;, lty=0, show.legend = FALSE) +
+  geom_label(data = means, aes(x = mean_PC1, y = mean_PC3, color = SMTS), show.legend = FALSE) +
+  scale_colour_manual(values=cols) +
+  scale_fill_manual(values=fills) +
+  scale_alpha_manual(values=alphas) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 17), axis.title.x=element_text(size=20, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 17), axis.title.y=element_text(size=20, face=&amp;quot;bold&amp;quot;))
+@
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;4&#34; srcset=&#34;
+               /project/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_0702de36dce05981a0a139b16dfabf4c.png 400w,
+               /project/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_b4c7a22c9bb37d7661625bf2a197e848.png 760w,
+               /project/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig4_hu07bde301a8363c4fc406b11e1d23edb2_371144_0702de36dce05981a0a139b16dfabf4c.png&#34;
+               width=&#34;760&#34;
+               height=&#34;459&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;5&#34; srcset=&#34;
+               /project/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_cf016d8291a9d30dd4e5ec570a7d1b61.png 400w,
+               /project/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_be5debfcfc25e87888e55f0b328bbf37.png 760w,
+               /project/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig5_hubaef97a82698dfa2e7f5c860eacd32d7_564924_cf016d8291a9d30dd4e5ec570a7d1b61.png&#34;
+               width=&#34;760&#34;
+               height=&#34;329&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h2 id=&#34;sparse-pca&#34;&gt;Sparse PCA&lt;/h2&gt;
+&lt;p&gt;Since standard PCA does not impose sparsity constraints on the loadings of principal directions, principal components are usually linear combinations of all input features and the none of the loadings are zero in general as shown in Figure 6. However, in Sparse PCA, principal components are a linear combination of a subset of input features, which provides an improved interpretability of the model. Sparse PCA prevents overfitting in this data where the number of features, $p $, is greater than the number of observations, $N $.&lt;/p&gt;
+&lt;p&gt;We therefore use sparse PCA introduced by [1,2]. This Sparse PCA aims to minimize the following problem:
+$$\text{min } f(A,B) = \frac{1}{2} ||X - XBA^T||^2 + \alpha ||B||_1 + \frac{1}{2} \beta ||B||^2, $$
+$$\text{ subject to } A^T A = I. $$
+where the matrix B is the sparse weight (loadings) matrix and A is an orthonormal matrix. This uses the elastic net regularization. The principal components $Z $ are formed as $Z = XB $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021)
+sparsepca.results.0.3 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-3, beta=1e-3, center = FALSE, scale = FALSE)
+sparsepca.results.0.4 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-4, beta=1e-4, center = FALSE, scale = FALSE)
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+num.zero.0.3&amp;lt;-vector()
+num.zero.0.4&amp;lt;-vector()
+num.zero.pca&amp;lt;-vector()
+num.zero.0.3[1]&amp;lt;-sum(sparsepca.results.0.3$loadings[,1]==0)
+num.zero.0.4[1]&amp;lt;-sum(sparsepca.results.0.4$loadings[,1]==0)
+num.zero.pca[1]&amp;lt;-sum(pca.results$rotation[,1]==0)
+for(i in 2:35){
+  PCs&amp;lt;-1:i
+  num.zero.0.3[i]&amp;lt;-sum(rowSums(sparsepca.results.0.3$loadings[,PCs])==0)
+  num.zero.0.4[i]&amp;lt;-sum(rowSums(sparsepca.results.0.4$loadings[,PCs])==0)
+  num.zero.pca[i]&amp;lt;-sum(rowSums(pca.results$rotation[,PCs])==0)
+}
+
+plot(1:35, num.zero.0.3, xlab=&amp;quot;Number of Principle Components&amp;quot;, 
+    ylab=&amp;quot;Number of Common Features with Zero Coefficients across PC&#39;s&amp;quot;, 
+    type=&#39;o&#39;, lty=2, pch=1, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.0.4, type=&#39;o&#39;, lty=3, pch=3, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.pca, type=&#39;o&#39;,  lty=1, pch=5, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+abline(h=19248, lty=3)
+text(25, 18500, labels = &amp;quot;Total number of features p=19248&amp;quot;, cex=1.3)
+text(25, 13500, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-3,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-3)), cex=1.3)
+text(25, 5000, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-4,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-4)), cex=1.3)
+text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;6&#34; srcset=&#34;
+               /project/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_8fa664d3bceb26cb54c2ec2bdda47b3f.png 400w,
+               /project/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_9c14029c464cab5bd2cd57733511042a.png 760w,
+               /project/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig6_hufefc7d968a94d72c604e68d4769fb98f_220079_8fa664d3bceb26cb54c2ec2bdda47b3f.png&#34;
+               width=&#34;760&#34;
+               height=&#34;486&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Figure 6 confirms that non-negligible number of features have zero coefficient across the principal components. For example, for Sparse PCA under the condition of $\alpha=10^{-3} $ and $\beta=10^{-3} $, $11518 $ features out of $p=19248 $ features have zero coefficients across the first $35 $ principal components. The number of features with zero coefficients across the PCs would decrease with the number of PCs, but there is a diminishing return. This indicates that the $11518 $ features are likely to be uninformative. Since $\alpha $ is a sparsity controlling parameter and $\beta $ controls the amount of ridge shrinkage, higher values of $\alpha $ lead to sparser components. Refer to the two different results of sparse PCA with two different parameters in Figure 6.&lt;/p&gt;
+&lt;p&gt;We now plot Sparse PCA (with parameters $\alpha=10^{-3} $ and $\beta=10^{-3} $) to see if the Sparse PCA can reveal the difference in gene expressions among different tissue types. Figure 7 shows the pairwise scatter plots of the principal components. We can clearly see separation of &lt;em&gt;Brain, Testis, Pituitary, Skin, Muscle, Heart, Blood Vessel, Nerve, Blood, Liver, Lung, Adipose Tissue&lt;/em&gt;, and &lt;em&gt;Spleen&lt;/em&gt; tissues from all others.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;7&#34; srcset=&#34;
+               /project/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_cd727805e1b5561918af91574b49d03e.png 400w,
+               /project/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_8e697931298b3fb88a6b358ad240061c.png 760w,
+               /project/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_1200x1200_fit_lanczos_3.png 1200w&#34;
+               src=&#34;https://jungyeol-kim.github.io/project/sparse-pca/fig7_hudc8834ae94556fedb67e0f67963e4974_741374_cd727805e1b5561918af91574b49d03e.png&#34;
+               width=&#34;718&#34;
+               height=&#34;760&#34;
+               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
+&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
+&lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
+&lt;!-- Press, 2008. --&gt;
+&lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
+&lt;!-- Cluster_analysis, 2021. --&gt;
+&lt;!-- [5] D. M. Witten and R. Tibshirani, “A framework for feature selection in clustering,” Journal of the American --&gt;
+&lt;!-- Statistical Association, vol. 105, no. 490, pp. 713–726, 2010. --&gt;
+&lt;!-- [6] Y. Kondo, M. Salibiann-Barrera, and R. H. Zamar, “Robustification of the sparse k-means clustering al- gorithm.” https://www.birs.ca/workshops/2011/11w5051/files/06_Yumi_Kondo_A_Robust_And_Sparse_K_ Means_Clustering_Algorithm.pdf, 2011. --&gt;
+&lt;!-- [7] M. Chavent, A. Mourer, and M. Olteanu, “Sparse weighted k-means for mixed data.” https://cran.r-project. org/web/packages/vimpclust/vignettes/sparsewkm.html#ref-sparsekmeans, 2020. --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Tracing and testing multiple generations of contacts to COVID-19 cases: cost-benefit tradeoffs</title>
+      <link>https://jungyeol-kim.github.io/project/contact-tracing/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/project/contact-tracing/</guid>
+      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+&lt;p&gt;We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig1.png&#34; alt=&#34;1&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig2.png&#34; alt=&#34;2&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+Throughout this report, we use &lt;em&gt;primary tissues (SMTS)&lt;/em&gt; rather than tissues (SMTSD) for simple visualization.&lt;/p&gt;
+&lt;h2 id=&#34;principal-component-analysis-pca&#34;&gt;Principal Component Analysis (PCA)&lt;/h2&gt;
+&lt;p&gt;We aim to see if the standard PCA can reveal the difference in gene expressions among different tissue types. We first perform PCA and compute the principal components.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021) 
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+a&amp;lt;-summary(pca.results)$importance[2,1:35]
+b&amp;lt;-summary(pca.results)$importance[3,1:35]
+pc_var_expd&amp;lt;-data.frame(&#39;PC&#39;=1:length(a), &#39;pct&#39;=a, &#39;pct_cum&#39;=b, stringsAsFactors = F)
+
+ggplot(data = pc_var_expd, aes(x = as.factor(PC))) +
+  geom_col(aes(y = pct)) +
+  geom_line(aes(y = pct_cum, group = 1)) +
+  geom_hline(yintercept = 0.75, linetype=&amp;quot;dashed&amp;quot;, color = &amp;quot;gray50&amp;quot;, size=0.5) +
+  geom_point(aes(y = pct_cum)) +
+  labs(x = &amp;quot;Principal component&amp;quot;, y = &amp;quot;Proportion of Variance&amp;quot;) +
+  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75), limits = c(0, 0.755)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 18), axis.title.x=element_text(size=24, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 18), axis.title.y=element_text(size=24, face=&amp;quot;bold&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig3.png&#34; alt=&#34;3&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;We notice is that the first 35 components explains over $75% $ of variance. &lt;em&gt;We can effectively reduce dimensionality from $19248 $ to $35 $ while only loosing about $25% $ of variance.&lt;/em&gt; We also notice that we can actually explain over $28% $ of variance with just the first two components and over $26% $ of variance with just the first and the third components. The pairwise scatter plot of principal components are displayed as follows. Figure 4(b) shows that, with only two components, we can clearly see separation of Brain, Pituitary, Blood, and Testis tissues from all others.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;temp&amp;lt;-data.frame(pca.results$x, &#39;SMTS&#39;=as.factor(final.data.orig$SMTS), &#39;SMTSD&#39;=as.factor(final.data.orig$SMTSD))
+
+gg_color_hue &amp;lt;- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  hcl(h = hues, l = 65, c = 100)[1:n]
+}
+cols = gg_color_hue(length(levels(temp$SMTS)))
+fills = gg_color_hue(length(levels(temp$SMTS)))
+alphas = rep(0.2,length(levels(temp$SMTS)))
+
+# SMTS.select&amp;lt;-levels(temp$SMTS)
+SMTS.select&amp;lt;-c(&amp;quot;Brain&amp;quot;, &amp;quot;Blood&amp;quot;, &amp;quot;Testis&amp;quot;, &amp;quot;Pituitary&amp;quot;)
+
+c.color&amp;lt;-which(!levels(temp$SMTS) %in% SMTS.select)
+cols[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+fills[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
+alphas[c.color]&amp;lt;-0
+
+means &amp;lt;- temp %&amp;gt;%
+  filter(SMTS %in% SMTS.select) %&amp;gt;%
+  group_by(SMTS) %&amp;gt;%
+  summarise(mean_PC1 = mean(PC1),
+            mean_PC3 = mean(PC3)) 
+
+ggplot(temp, aes(x = PC1, y = PC3, label = SMTS)) + 
+  geom_point(aes(colour = SMTS), size=0.5, alpha=0.7, show.legend = FALSE) +
+  stat_ellipse(aes(fill = SMTS, alpha = SMTS), level = .95, geom = &amp;quot;polygon&amp;quot;, lty=0, show.legend = FALSE) +
+  geom_label(data = means, aes(x = mean_PC1, y = mean_PC3, color = SMTS), show.legend = FALSE) +
+  scale_colour_manual(values=cols) +
+  scale_fill_manual(values=fills) +
+  scale_alpha_manual(values=alphas) +
+  theme_classic() +
+  theme(axis.text.x = element_text(size = 17), axis.title.x=element_text(size=20, face=&amp;quot;bold&amp;quot;)) +
+  theme(axis.text.y = element_text(size = 17), axis.title.y=element_text(size=20, face=&amp;quot;bold&amp;quot;))
+@
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig4.png&#34; alt=&#34;4&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig5.png&#34; alt=&#34;5&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;h2 id=&#34;sparse-pca&#34;&gt;Sparse PCA&lt;/h2&gt;
+&lt;p&gt;Since standard PCA does not impose sparsity constraints on the loadings of principal directions, principal components are usually linear combinations of all input features and the none of the loadings are zero in general as shown in Figure 6. However, in Sparse PCA, principal components are a linear combination of a subset of input features, which provides an improved interpretability of the model. Sparse PCA prevents overfitting in this data where the number of features, $p $, is greater than the number of observations, $N $.&lt;/p&gt;
+&lt;p&gt;We therefore use sparse PCA introduced by [1,2]. This Sparse PCA aims to minimize the following problem:
+$$\text{min } f(A,B) = \frac{1}{2} ||X - XBA^T||^2 + \alpha ||B||_1 + \frac{1}{2} \beta ||B||^2, $$
+$$\text{ subject to } A^T A = I. $$
+where the matrix B is the sparse weight (loadings) matrix and A is an orthonormal matrix. This uses the elastic net regularization. The principal components $Z $ are formed as $Z = XB $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021)
+sparsepca.results.0.3 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-3, beta=1e-3, center = FALSE, scale = FALSE)
+sparsepca.results.0.4 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-4, beta=1e-4, center = FALSE, scale = FALSE)
+pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
+
+num.zero.0.3&amp;lt;-vector()
+num.zero.0.4&amp;lt;-vector()
+num.zero.pca&amp;lt;-vector()
+num.zero.0.3[1]&amp;lt;-sum(sparsepca.results.0.3$loadings[,1]==0)
+num.zero.0.4[1]&amp;lt;-sum(sparsepca.results.0.4$loadings[,1]==0)
+num.zero.pca[1]&amp;lt;-sum(pca.results$rotation[,1]==0)
+for(i in 2:35){
+  PCs&amp;lt;-1:i
+  num.zero.0.3[i]&amp;lt;-sum(rowSums(sparsepca.results.0.3$loadings[,PCs])==0)
+  num.zero.0.4[i]&amp;lt;-sum(rowSums(sparsepca.results.0.4$loadings[,PCs])==0)
+  num.zero.pca[i]&amp;lt;-sum(rowSums(pca.results$rotation[,PCs])==0)
+}
+
+plot(1:35, num.zero.0.3, xlab=&amp;quot;Number of Principle Components&amp;quot;, 
+    ylab=&amp;quot;Number of Common Features with Zero Coefficients across PC&#39;s&amp;quot;, 
+    type=&#39;o&#39;, lty=2, pch=1, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.0.4, type=&#39;o&#39;, lty=3, pch=3, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+points(1:35, num.zero.pca, type=&#39;o&#39;,  lty=1, pch=5, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
+abline(h=19248, lty=3)
+text(25, 18500, labels = &amp;quot;Total number of features p=19248&amp;quot;, cex=1.3)
+text(25, 13500, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-3,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-3)), cex=1.3)
+text(25, 5000, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-4,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-4)), cex=1.3)
+text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig6.png&#34; alt=&#34;6&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;Figure 6 confirms that non-negligible number of features have zero coefficient across the principal components. For example, for Sparse PCA under the condition of $\alpha=10^{-3} $ and $\beta=10^{-3} $, $11518 $ features out of $p=19248 $ features have zero coefficients across the first $35 $ principal components. The number of features with zero coefficients across the PCs would decrease with the number of PCs, but there is a diminishing return. This indicates that the $11518 $ features are likely to be uninformative. Since $\alpha $ is a sparsity controlling parameter and $\beta $ controls the amount of ridge shrinkage, higher values of $\alpha $ lead to sparser components. Refer to the two different results of sparse PCA with two different parameters in Figure 6.&lt;/p&gt;
+&lt;p&gt;We now plot Sparse PCA (with parameters $\alpha=10^{-3} $ and $\beta=10^{-3} $) to see if the Sparse PCA can reveal the difference in gene expressions among different tissue types. Figure 7 shows the pairwise scatter plots of the principal components. We can clearly see separation of &lt;em&gt;Brain, Testis, Pituitary, Skin, Muscle, Heart, Blood Vessel, Nerve, Blood, Liver, Lung, Adipose Tissue&lt;/em&gt;, and &lt;em&gt;Spleen&lt;/em&gt; tissues from all others.&lt;/p&gt;
+&lt;p&gt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+&lt;figure  &gt;
+  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
+    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig7.png&#34; alt=&#34;7&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
+  &lt;/div&gt;&lt;/figure&gt;
+&lt;/p&gt;
+&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
+&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
+&lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
+&lt;!-- Press, 2008. --&gt;
+&lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
+&lt;!-- Cluster_analysis, 2021. --&gt;
+&lt;!-- [5] D. M. Witten and R. Tibshirani, “A framework for feature selection in clustering,” Journal of the American --&gt;
+&lt;!-- Statistical Association, vol. 105, no. 490, pp. 713–726, 2010. --&gt;
+&lt;!-- [6] Y. Kondo, M. Salibiann-Barrera, and R. H. Zamar, “Robustification of the sparse k-means clustering al- gorithm.” https://www.birs.ca/workshops/2011/11w5051/files/06_Yumi_Kondo_A_Robust_And_Sparse_K_ Means_Clustering_Algorithm.pdf, 2011. --&gt;
+&lt;!-- [7] M. Chavent, A. Mourer, and M. Olteanu, “Sparse weighted k-means for mixed data.” https://cran.r-project. org/web/packages/vimpclust/vignettes/sparsewkm.html#ref-sparsekmeans, 2020. --&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Vehicular Messaging Simulation</title>
       <link>https://jungyeol-kim.github.io/project/v2v/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/v2v/</guid>
@@ -338,6 +953,7 @@ par(new=F)
 legend(0, 0.0025, legend=c(&amp;quot;Infomred&amp;quot;,&amp;quot;Non-infomred&amp;quot;), pch = c(1, 1), col=c(&amp;quot;black&amp;quot;,&amp;quot;red&amp;quot;))
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/v2v/index.en_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;[1] Kim, J., Sarkar, S., Venkatesh, S. S., Ryerson, M. S., &amp;amp; Starobinski, D. (2020). An epidemiological diffusion framework for vehicular messaging in general transportation networks. Transportation Research Part B: Methodological, 131, 160-190.&lt;/p&gt;
 </description>
     </item>
     
