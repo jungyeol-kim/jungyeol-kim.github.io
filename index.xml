@@ -556,9 +556,10 @@ clusters = temp$cluster
 ClusterPurity(clusters, classes)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The purity score is 0.8185.&lt;/p&gt;
-&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
-&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
-&lt;p&gt;[3] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.”https://en.wikipedia.org/wiki/Cluster_analysis, 2021.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;br /&gt;
+[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;br /&gt;
+[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;br /&gt;
+[3] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.”https://en.wikipedia.org/wiki/Cluster_analysis, 2021.&lt;/p&gt;
 &lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
 &lt;!-- Press, 2008. --&gt;
 &lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
