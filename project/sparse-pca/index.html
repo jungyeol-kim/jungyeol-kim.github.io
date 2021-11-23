@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." />
+  <meta name="description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to compare standard PCA and Sparse PCA, in high-dimensional data which can pose a problem known as the curse of dimensionality." />
 
   
   <link rel="alternate" hreflang="en-us" href="https://jungyeol-kim.github.io/project/sparse-pca/" />
@@ -297,7 +297,7 @@
   <meta property="og:site_name" content="Jungyeol Kim" />
   <meta property="og:url" content="https://jungyeol-kim.github.io/project/sparse-pca/" />
   <meta property="og:title" content="Dimensionality Reduction and Clustering for High Dimensional Gene Expression Data | Jungyeol Kim" />
-  <meta property="og:description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
+  <meta property="og:description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to compare standard PCA and Sparse PCA, in high-dimensional data which can pose a problem known as the curse of dimensionality." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
     <meta property="twitter:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" /><meta property="og:locale" content="en-us" />
   
     
@@ -347,7 +347,7 @@
       "url": "https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_192x192_fill_lanczos_center_3.png"
     }
   },
-  "description": "Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues."
+  "description": "Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to compare standard PCA and Sparse PCA, in high-dimensional data which can pose a problem known as the curse of dimensionality."
 }
 </script>
 
@@ -729,7 +729,7 @@
 <li>K-means Clustering</li>
 </ul>
 <h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
-<p>Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving <strong>Multinomial logistic regression with lasso</strong>, <strong>Random forest</strong>, and <strong>Gradient boosting</strong>. More importantly, we will combine all the three heterogeneous models into single strong classifier, <strong>Hybrid ensemble model</strong>. We will compare individual classification models with our hybrid ensemble model.</p>
+<p>Our objective is to compare standard PCA and Sparse PCA, in high-dimensional data which can pose a problem known as the curse of dimensionality. We first see if the standard PCA and Sparse PCA can reveal the difference in gene expressions among different tissue types. We then perform k-means clustering to cluster all the samples based on gene expression data. However, clustering does not perform well in this high-dimensional data because too many features causes observations to appear equidistant especially when we use distance-based metrics for clustering. Therefore, we first reduce dimensionality through PCA and then perform K-means clustering.</p>
 <p>The raw data can be obtained from <a href="https://gtexportal.org/home/" target="_blank" rel="noopener">https://gtexportal.org/home/</a>. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.</p>
 <p>Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.</p>
 <p>
@@ -1052,7 +1052,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
                loading="lazy" data-zoomable /></div>
   </div></figure>
 </p>
-<p>We now perform k-mean clustering to cluster all the samples based on gene expression data. However, since the number of features (genes) is too high, i.e, curse of dimensionality, clustering does not perform well. This is because too many features causes observations to appear equidistant especially when we use distance-based metrics for clustring. Hence, we use the first 35 principal components to perform K-means clustering.</p>
+<p>We now perform k-means clustering to cluster all the samples based on gene expression data. However, since the number of features (genes) is too high, i.e, curse of dimensionality, clustering does not perform well. This is because too many features causes observations to appear equidistant especially when we use distance-based metrics for clustring. Hence, we use the first 35 principal components to perform K-means clustering.</p>
 <pre><code class="language-r">set.seed(2021)
 temp&lt;-data.frame(pca.results$x, 'SMTS'=as.factor(final.data.orig$SMTS), 'SMTSD'=as.factor(final.data.orig$SMTSD))
 kmenas.results &lt;- kmeans(temp[,1:35], centers = 30, nstart = 10)
