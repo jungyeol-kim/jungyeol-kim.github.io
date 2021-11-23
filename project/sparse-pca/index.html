@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." />
+  <meta name="description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." />
 
   
   <link rel="alternate" hreflang="en-us" href="https://jungyeol-kim.github.io/project/sparse-pca/" />
@@ -296,8 +296,8 @@
   
   <meta property="og:site_name" content="Jungyeol Kim" />
   <meta property="og:url" content="https://jungyeol-kim.github.io/project/sparse-pca/" />
-  <meta property="og:title" content="Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data | Jungyeol Kim" />
-  <meta property="og:description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
+  <meta property="og:title" content="Dimensionality Reduction and Clustering for High Dimensional Gene Expression Data | Jungyeol Kim" />
+  <meta property="og:description" content="Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
     <meta property="twitter:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" /><meta property="og:locale" content="en-us" />
   
     
@@ -330,7 +330,7 @@
     "@type": "WebPage",
     "@id": "https://jungyeol-kim.github.io/project/sparse-pca/"
   },
-  "headline": "Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data",
+  "headline": "Dimensionality Reduction and Clustering for High Dimensional Gene Expression Data",
   
   "image": [
     "https://jungyeol-kim.github.io/project/sparse-pca/featured.png"
@@ -347,7 +347,7 @@
       "url": "https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_192x192_fill_lanczos_center_3.png"
     }
   },
-  "description": "Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues."
+  "description": "Contents  Exploratory Data Analysis Principal Component Analysis (PCA) Sparse PCA K-means Clustering  Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues."
 }
 </script>
 
@@ -363,7 +363,7 @@
 
 
 
-  <title>Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data | Jungyeol Kim</title>
+  <title>Dimensionality Reduction and Clustering for High Dimensional Gene Expression Data | Jungyeol Kim</title>
 </head>
 
 
@@ -668,7 +668,7 @@
   
   
 <div class="article-container pt-3">
-  <h1>Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data</h1>
+  <h1>Dimensionality Reduction and Clustering for High Dimensional Gene Expression Data</h1>
 
   
 
@@ -726,6 +726,7 @@
 <li>Exploratory Data Analysis</li>
 <li>Principal Component Analysis (PCA)</li>
 <li>Sparse PCA</li>
+<li>K-means Clustering</li>
 </ul>
 <h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
 <p>Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving <strong>Multinomial logistic regression with lasso</strong>, <strong>Random forest</strong>, and <strong>Gradient boosting</strong>. More importantly, we will combine all the three heterogeneous models into single strong classifier, <strong>Hybrid ensemble model</strong>. We will compare individual classification models with our hybrid ensemble model.</p>
@@ -1022,8 +1023,56 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
                loading="lazy" data-zoomable /></div>
   </div></figure>
 </p>
+<h2 id="k-means-clustering">K-means Clustering</h2>
+<p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<figure  >
+  <div class="d-flex justify-content-center">
+    <div class="w-100" ><img alt="8" srcset="
+               /project/sparse-pca/fig8_hua32c16d0c3334a275af58b6ed966ca43_499093_72d2f1e2841f7a592b7e3fa8b4172a68.png 400w,
+               /project/sparse-pca/fig8_hua32c16d0c3334a275af58b6ed966ca43_499093_5e00dde5397f61e312a34f913eded150.png 760w,
+               /project/sparse-pca/fig8_hua32c16d0c3334a275af58b6ed966ca43_499093_1200x1200_fit_lanczos_3.png 1200w"
+               src="/project/sparse-pca/fig8_hua32c16d0c3334a275af58b6ed966ca43_499093_72d2f1e2841f7a592b7e3fa8b4172a68.png"
+               width="760"
+               height="419"
+               loading="lazy" data-zoomable /></div>
+  </div></figure>
+</p>
+<p>We now perform k-mean clustering to cluster all the samples based on gene expression data. However, since the number of features (genes) is too high, i.e, curse of dimensionality, clustering does not perform well. This is because too many features causes observations to appear equidistant especially when we use distance-based metrics for clustring. Hence, we use the first 35 principal components to perform K-means clustering.</p>
+<pre><code class="language-r">set.seed(2021)
+temp&lt;-data.frame(pca.results$x, 'SMTS'=as.factor(final.data.orig$SMTS), 'SMTSD'=as.factor(final.data.orig$SMTSD))
+kmenas.results &lt;- kmeans(temp[,1:35], centers = 30, nstart = 10)
+</code></pre>
+<p><em>Quantitative evaluation of K-means clustering</em>  - We evaluate the clustering in comparison to the known labels. For the quantitative evaluation, we use a metric called <em>purity</em>, which is a measure of the extent to which clusters contain a single class. Formally, it is defined as</p>
+<p>\begin{align}
+\frac{1}{N}\sum_{m\in M} \max_{d\in D} |m \cup d|
+\end{align}</p>
+<p>where $ M $ is given set of clusters, $ D $ is set of classes, and $ N $ is total observations.</p>
+<pre><code class="language-r">ClusterPurity &lt;- function(clusters, classes) {
+  sum(apply(table(classes, clusters), 2, max)) / length(clusters)
+}
+classes = temp$SMTS
+clusters = temp$cluster
+ClusterPurity(clusters, classes)
+</code></pre>
+<p>The purity score is 0.8185.</p>
 <p>[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.</p>
 <p>[2] N. B. Erichson, “Spca via variable projection.” <a href="https://github.com/erichson/spca," target="_blank" rel="noopener">https://github.com/erichson/spca,</a> 2018.</p>
+<p>[3] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.”https://en.wikipedia.org/wiki/Cluster_analysis, 2021.</p>
 <!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University -->
 <!-- Press, 2008. -->
 <!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ -->
@@ -1065,7 +1114,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="https://twitter.com/intent/tweet?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;text=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-twitter">
+        <a href="https://twitter.com/intent/tweet?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;text=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
@@ -1078,7 +1127,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="https://www.facebook.com/sharer.php?u=https://jungyeol-kim.github.io/project/sparse-pca/&amp;t=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-facebook">
+        <a href="https://www.facebook.com/sharer.php?u=https://jungyeol-kim.github.io/project/sparse-pca/&amp;t=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-facebook">
           <i class="fab fa-facebook"></i>
         </a>
       </li>
@@ -1091,7 +1140,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="mailto:?subject=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data&amp;body=https://jungyeol-kim.github.io/project/sparse-pca/" target="_blank" rel="noopener" class="share-btn-email">
+        <a href="mailto:?subject=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data&amp;body=https://jungyeol-kim.github.io/project/sparse-pca/" target="_blank" rel="noopener" class="share-btn-email">
           <i class="fas fa-envelope"></i>
         </a>
       </li>
@@ -1104,7 +1153,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="https://www.linkedin.com/shareArticle?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;title=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-linkedin">
+        <a href="https://www.linkedin.com/shareArticle?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;title=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-linkedin">
           <i class="fab fa-linkedin-in"></i>
         </a>
       </li>
@@ -1117,7 +1166,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="whatsapp://send?text=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data%20https://jungyeol-kim.github.io/project/sparse-pca/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+        <a href="whatsapp://send?text=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data%20https://jungyeol-kim.github.io/project/sparse-pca/" target="_blank" rel="noopener" class="share-btn-whatsapp">
           <i class="fab fa-whatsapp"></i>
         </a>
       </li>
@@ -1130,7 +1179,7 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
       
       
       <li>
-        <a href="https://service.weibo.com/share/share.php?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;title=Sparse%20PCA:%20Dimensionality%20Reduction%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-weibo">
+        <a href="https://service.weibo.com/share/share.php?url=https://jungyeol-kim.github.io/project/sparse-pca/&amp;title=Dimensionality%20Reduction%20and%20Clustering%20for%20High%20Dimensional%20Gene%20Expression%20Data" target="_blank" rel="noopener" class="share-btn-weibo">
           <i class="fab fa-weibo"></i>
         </a>
       </li>
