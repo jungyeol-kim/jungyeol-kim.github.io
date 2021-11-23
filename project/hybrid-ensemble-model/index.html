@@ -1,0 +1,1419 @@
+<!DOCTYPE html><html lang="en-us" >
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" />
+
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+    
+    <script src="/js/mathjax-config.js"></script>
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/github.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+        
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.css" integrity="sha512-1xoFisiGdy9nvho8EgXuXvnpR5GAMSjFwp40gSRE3NwdUdIMIKuPa7bqoUhLD0O/5tPNhteAsE5XyyMi5reQVA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" integrity="" crossorigin="anonymous" async></script>
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Lora:wght@400;700&family=Roboto:wght@400;700&display=swap&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cutive+Mono&family=Lora:wght@400;700&family=Roboto:wght@400;700&display=swap&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.08fb470d231a7fe4d218bdef4b4b8521.css" />
+
+  
+
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+  <meta property="og:site_name" content="Jungyeol Kim" />
+  <meta property="og:url" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" />
+  <meta property="og:title" content="Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data | Jungyeol Kim" />
+  <meta property="og:description" content="Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png" />
+    <meta property="twitter:image" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2020-12-01T21:13:14-05:00"
+      />
+    
+    <meta property="article:modified_time" content="2020-12-01T21:13:14-05:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://jungyeol-kim.github.io/project/hybrid-ensemble-model/"
+  },
+  "headline": "Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data",
+  
+  "image": [
+    "https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png"
+  ],
+  
+  "datePublished": "2020-12-01T21:13:14-05:00",
+  "dateModified": "2020-12-01T21:13:14-05:00",
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Jungyeol Kim",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_192x192_fill_lanczos_center_3.png"
+    }
+  },
+  "description": "Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data | Jungyeol Kim</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="981c5e5d6756c0c73bb14a808a087833" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.7f3e7639f4c7f2a2cf83b68ea7de7f08.js"></script>
+
+  
+
+
+<aside class="search-modal" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#" aria-label="Close"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" spellcheck="false" type="search" class="form-control"
+        aria-label="Search...">
+        
+      </div>
+
+      
+      
+
+      
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+  <div class="container-xl">
+
+    
+    <div class="d-none d-lg-inline-flex">
+      <a class="navbar-brand" href="/">Jungyeol Kim</a>
+    </div>
+    
+
+    
+    <button type="button" class="navbar-toggler" data-toggle="collapse"
+            data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+    <span><i class="fas fa-bars"></i></span>
+    </button>
+    
+
+    
+    <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+      <a class="navbar-brand" href="/">Jungyeol Kim</a>
+    </div>
+    
+
+    
+    
+    <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+      
+      <ul class="navbar-nav d-md-inline-flex">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>Home</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#projects"><span>Projects</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+
+        
+        
+        
+        
+
+        
+          
+            
+            
+          
+          
+            
+            
+            
+              
+            
+            
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#contact"><span>Contact</span></a>
+        </li>
+
+        
+        
+
+      
+
+        
+      </ul>
+    </div>
+
+    <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+      
+      
+
+      
+      
+      <li class="nav-item">
+        <a class="nav-link js-search" href="#" aria-label="Search"><i class="fas fa-search" aria-hidden="true"></i></a>
+      </li>
+      
+
+      
+      
+
+      
+      
+
+    </ul>
+
+  </div>
+</nav>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article article-project">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1>Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data</h1>
+
+  
+
+  
+    
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    Dec 1, 2020
+  </span>
+  
+
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+
+</div>
+
+    
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
+<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+<p>Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving <strong>Multinomial logistic regression with lasso</strong>, <strong>Random forest</strong>, and <strong>Gradient boosting</strong>. More importantly, we will combine all the three heterogeneous models into single strong classifier, <strong>Hybrid ensemble model</strong>. We will compare individual classification models with our hybrid ensemble model.</p>
+<p>The raw data can be obtained from <a href="https://gtexportal.org/home/" target="_blank" rel="noopener">https://gtexportal.org/home/</a>. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.</p>
+<p>The dataset I use here is equivalent to the one in the previous project. We thus omit summary statistics.</p>
+<p>Get the libraries and import the data:</p>
+<pre><code class="language-r">final.data.scale &lt;- get(load(&quot;final_data_scale.RData&quot;))
+</code></pre>
+<p>We split the data into training (80%) and testing data (20%).</p>
+<pre><code class="language-r">data1&lt;-final.data.scale[final.data.scale$SMTSD %like% &quot;Brain&quot;,]
+data1$SMTSD&lt;-as.factor(data1$SMTSD)
+
+smtsd = data1$SMTSD
+label = factor(as.integer(data1$SMTSD)-1, levels = c(0:12))
+data1$SMTSD = NULL
+
+set.seed(2021)
+n = nrow(data1)
+train.index = sample(n,floor(0.8*n))
+train.data = as.matrix(data1[train.index,])
+train.label = label[train.index]
+test.data = as.matrix(data1[-train.index,])
+test.label = label[-train.index]
+</code></pre>
+<h2 id="multiclass-logistic-regression-with-lasso">Multiclass Logistic Regression with Lasso</h2>
+<p>We perform logistic regression with lasso in which the number of classes is more than two. Lasso penalized regression has the advantage of being able to handle the case of $ p\geq N $, where $ p $ is the number of features and $ N $ is the number of observations. Suppose that the prediction space has K distinct levels $ G={1,2,&hellip;,K} $. We model</p>
+<p>\begin{align}
+P(G=k|X=x)=\frac{\exp^{\beta_{ok}+\beta^T_k x}}{\sum_{l=1}^{K} \exp^{\beta_{ol}+\beta^T_l x}}.
+\end{align}</p>
+<p>Let $ Y $ be the $ N \times K $ prediction space matrix, with element $ y_{lk}=1 $ if observation $ i $ belongs to class $ k $ and $ y_{lk}=0 $ otherwise. Let $ x \in \mathbb{R}^p $ be an $ i^{th} $ observation. $ \beta $ is a $ p\times K $ matrix of coefficients. $ \beta_k $ indicates the $ k^{th} $ column and $ \beta^{(j)} $ indicates the $ j^{th} $ row. The lasso penalized negative log-likelihood function and the objective is to minimize the following function:</p>
+<p>\begin{align}
+L({\beta_{ok},\beta_k}_1^K) = - \left[  \frac{1}{N} \sum_{i=1}^K \left( y_{il}(\beta_{ok}+x^T_i \beta_k) - \log \sum_{l=1}^K y_{il}(\beta_{ol}+x^T_i \beta_l) \right)\right] + \lambda \left[ \sum_{j=1}^p ||\beta_j||_1 \right].
+\end{align}</p>
+<p>We consider a grouped-lasso penalty on all the K coefficients for a particular variable, which makes them all be zero or nonzero together.</p>
+<pre><code class="language-r">x &lt;- train.data
+y &lt;- train.label
+m.lasso.grouped &lt;- cv.glmnet(x = x ,y = y, family = c(&quot;multinomial&quot;), type.multinomial = &quot;grouped&quot;, alpha = 1) # type.measure = &quot;deviance&quot; or &quot;mse&quot;
+</code></pre>
+<p>10 fold Cross Validation to minimize the deviance which is minus twice the log-likelihood on the left-out data, $ −2 \log(\mathcal{Lik}) $. We compare cross-validation errors while fine-tuning hyperparameter $ \lambda $.</p>
+<pre><code class="language-r">plot(m.lasso.grouped)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>We choose lambda=lambda.1se which is the largest value of $ \lambda $ such that error is within 1 standard error of the cross-validated errors for lambda.min (i.e., $ \lambda $ of minimum mean cross-validated error). This allow us to select 312 features (out of 19,248 features) that are useful, discarding the useless or redundant features.</p>
+<pre><code class="language-r">print(paste(&quot;Number of Selected Features =&quot;,sprintf(&quot;%d&quot;, m.lasso.grouped$nzero[m.lasso.grouped$index[2]]-1)))
+</code></pre>
+<pre><code>## [1] &quot;Number of Selected Features = 312&quot;
+</code></pre>
+<p>We then check how good our model works well with the data it hasn&rsquo;t seen yet (test data). Therefore, we compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.</p>
+<pre><code class="language-r"># Make prediction on test data
+predicted.classes &lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &quot;class&quot;)), levels = c(0:12))
+observed.classes &lt;- test.label
+
+# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<pre><code class="language-r"># Model accuracy
+result&lt;-mean(predicted.classes == observed.classes)
+print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result)))
+</code></pre>
+<pre><code>## [1] &quot;Final Accuracy = 93.95%&quot;
+</code></pre>
+<p>This gives as output an accuracy of 93.95%. Can we do better?</p>
+<h2 id="multiclass-random-forest">Multiclass Random Forest</h2>
+<p>Random forest combines weak learners trained on bootstrap samples at the end of the process by majority rules and further reduce the variance by forcing to split only a subset of predictors. We use cross-validation to estimate the prediction error. Out-of-Bag harnesses the similar idea. Since for each tree we only use the bootstrapped observations, there are some samples left that are not used for training/building the tree. We refer these observations that are not used as the out-of-bag (OOB) observations.</p>
+<p>Ready to tune the number of the trees in the bag (ntree) and the number of randomly chosen predictors at each split (mtry).</p>
+<pre><code class="language-r">fit.rf.ntree &lt;- randomForest(x = train.data, y = train.label, mtry=100, ntree=500)
+</code></pre>
+<pre><code class="language-r">plot(1:500,fit.rf$err.rate[,1], pch=16, type=&quot;b&quot;, xlab=&quot;Trees&quot;, ylab=&quot;OOB error&quot;)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>We may need 200 trees to settle the OOB errors.</p>
+<p>Now we fix the number of the trees in the bag, ntree=200, We only want to compare the OOB error[200] to see the impact of the number of randomly chosen predictors at each split (mtry). Here we loop mtry from 100 to 10000 and return the testing OOB errors.</p>
+<pre><code class="language-r"># Tuning hyperparameter (mtry)
+mtry_set&lt;-c(seq(100,1000,100),seq(2000,10000,1000))
+rf.error.p &lt;- rep(NA,length(mtry_set))  # set up a vector of length 30
+fit.rf&lt;-vector(mode = 'list', length = length(mtry_set))
+for (p in 1:length(mtry_set))  # repeat the following code inside { } 30 times
+{
+  fit.rf[[p]] &lt;- randomForest(x = train.data, y = train.label, mtry=mtry_set[p], ntree=200) # This works
+  rf.error.p[p] &lt;- fit.rf[[p]]$err.rate[200,1]  # collecting oob mse based on 200 trees
+}
+</code></pre>
+<pre><code class="language-r">plot(mtry_set, rf.error.p, pch=16, xlab=&quot;mtry&quot;, ylab=&quot;OOB error of mtry&quot;, type='b')
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>We select the final model by taking mtry = 2000 and make prediction on the data it hasn&rsquo;t seen yet (test data).</p>
+<pre><code class="language-r"># Final model
+optimal.mtry&lt;-2000
+final.rf&lt;-fit.rf[[which(mtry_set==optimal.mtry)]]
+</code></pre>
+<pre><code class="language-r"># Make prediction on test data
+predicted.classes &lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &quot;class&quot;)), levels = c(0:12))
+observed.classes &lt;- test.label
+</code></pre>
+<p>We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.</p>
+<pre><code class="language-r"># Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre><code class="language-r"># Model accuracy
+result&lt;-mean(predicted.classes == observed.classes)
+print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result)))
+</code></pre>
+<pre><code>## [1] &quot;Final Accuracy = 93.76%&quot;
+</code></pre>
+<p>This gives as output an accuracy of 93.76%.</p>
+<h2 id="multiclass-gradient-boosting-xgboost">Multiclass Gradient Boosting (XGBoost)</h2>
+<p>Random forest combines weak leaners trained on bootstrap samples at the end of the process by majority rules, thus models are built independently. On the other hand, Gradient Boosting combines weak learners along the way in an adaptive way, thus the new model is affected by the performance of a previously built model.</p>
+<pre><code class="language-r">coef.1se &lt;- coef(m.lasso.grouped, s=&quot;lambda.1se&quot;)  #s=c(&quot;lambda.1se&quot;,&quot;lambda.min&quot;) or lambda value
+coef.1se &lt;- coef.1se$`0`[which(coef.1se$`0`!=0),]   # get the non=zero coefficients
+var.1se &lt;- rownames(as.matrix(coef.1se))[-1] # output the names
+
+
+
+train.data.bt&lt;-train.data[, colnames(train.data) %in% var.1se]
+train.label.bt&lt;-as.integer(as.character(train.label))
+test.data.bt&lt;-test.data[, colnames(test.data) %in% var.1se]
+test.label.bt&lt;-as.integer(as.character(test.label))
+
+train_matrix &lt;- xgb.DMatrix(data = train.data.bt, label = train.label.bt)
+test_matrix &lt;- xgb.DMatrix(data = test.data.bt, label = test.label.bt)
+</code></pre>
+<p>We tune the XGBoost model by passing the following parameters as a list object to the params argument:</p>
+<ul>
+<li>eta:controls the learning rate</li>
+<li>max_depth: tree depth</li>
+<li>subsample: percent of training data to sample for each tree</li>
+<li>colsample_bytrees: percent of columns to sample from for each tree</li>
+</ul>
+<pre><code class="language-r"># create hyperparameter grid
+hyper_grid &lt;- expand.grid(
+  eta = c(.01, .1),
+  max_depth = c(1, 3, 5, 7),
+  # min_child_weight = c(1, 3, 5, 7),
+  subsample = c(.8), 
+  colsample_bytree = c(.8),
+  optimal_trees = 0,
+  mlogloss = 0
+)
+
+
+# total number of combinations
+nrow(hyper_grid)
+
+for(i in 1:nrow(hyper_grid)) {
+  # create parameter list
+  params &lt;- list(
+    objective = &quot;multi:softprob&quot;,
+    eval_metric = &quot;mlogloss&quot;,
+    num_class = length(unique(train.label.bt)), 
+    eta = hyper_grid$eta[i],
+    max_depth = hyper_grid$max_depth[i],
+    # min_child_weight = hyper_grid$min_child_weight[i],
+    subsample = hyper_grid$subsample[i],
+    colsample_bytree = hyper_grid$colsample_bytree[i]
+  )
+  
+  # reproducibility
+  set.seed(2021)
+  
+  # train model
+  xgb.tune &lt;- xgb.cv(
+    params = params,
+    data = train_matrix,
+    nrounds = 5000,
+    nfold = 5,
+    verbose = 0,               # silent,
+    early_stopping_rounds = 10, # stop if no improvement for 10 consecutive trees
+    prediction = TRUE
+  )
+  
+  hyper_grid$optimal_trees[i] &lt;- which.min(xgb.tune$evaluation_log$test_mlogloss_mean)
+  hyper_grid$mlogloss[i] &lt;- min(xgb.tune$evaluation_log$test_mlogloss_mean)
+}
+</code></pre>
+<pre><code class="language-r">hyper_grid
+</code></pre>
+<pre><code>##    eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 1 0.01         1       0.8              0.8          3207 0.2100542
+## 2 0.10         1       0.8              0.8           403 0.2079252
+## 3 0.01         3       0.8              0.8          1374 0.2089576
+## 4 0.10         3       0.8              0.8           163 0.2069576
+## 5 0.01         5       0.8              0.8          1412 0.2143006
+## 6 0.10         5       0.8              0.8           185 0.2174870
+## 7 0.01         7       0.8              0.8          1412 0.2153698
+## 8 0.10         7       0.8              0.8           185 0.2208950
+</code></pre>
+<pre><code class="language-r">hyper_grid[which.min(hyper_grid$mlogloss),]
+</code></pre>
+<pre><code>##   eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 4 0.1         3       0.8              0.8           163 0.2069576
+</code></pre>
+<p>We choose the best hyperparameters in the above search and develop the best model using the chosen hyperparameters.</p>
+<pre><code class="language-r">opt.point&lt;-which.min(hyper_grid$mlogloss)
+# parameter list
+params &lt;- list(
+  objective = &quot;multi:softprob&quot;,
+  eval_metric = &quot;mlogloss&quot;,
+  num_class = length(unique(test.label.bt)), 
+  eta = hyper_grid$eta[opt.point],
+  max_depth = hyper_grid$max_depth[opt.point],
+  # min_child_weight = hyper_grid$min_child_weight[i],
+  subsample = hyper_grid$subsample[opt.point],
+  colsample_bytree = hyper_grid$colsample_bytree[opt.point]
+)
+</code></pre>
+<pre><code class="language-r"># Final model
+xgb.fit.final &lt;- xgboost(
+  params = params,
+  data = train_matrix,
+  verbose = 0,
+  nrounds = hyper_grid$optimal_trees[opt.point],
+  early_stopping_rounds = 10 # stop if no improvement for 10 consecutive trees
+)
+</code></pre>
+<p>We make prediction on the data it hasn&rsquo;t seen yet (test data).</p>
+<pre><code class="language-r"># Predict outcomes with the test data
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T)
+xgb.pred = as.data.frame(xgb.pred)
+
+xgb.pred$prediction = apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)])
+xgb.pred$label = test.label.bt
+</code></pre>
+<p>We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.</p>
+<pre><code class="language-r"># Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &lt;- confusion_matrix(targets = xgb.pred$label, predictions = xgb.pred$prediction)
+plot_confusion_matrix(
+  conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<pre><code class="language-r">result = sum(xgb.pred$prediction==xgb.pred$label)/nrow(xgb.pred)
+print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result)))
+</code></pre>
+<pre><code>## [1] &quot;Final Accuracy = 95.09%&quot;
+</code></pre>
+<p>This gives as output an accuracy of 95.09%.</p>
+<h2 id="hybrid-ensemble-learning">Hybrid Ensemble Learning</h2>
+<p>We have thus far developed the three models. Both random forest and gradient boosting are ensemble methods in which <strong>similar</strong> types of weak learners are combined to develop strong learner.</p>
+<p>On the other hand, we here combine three <strong>different</strong> types of weak learners, two ensemble models and one logistic regression, into <strong>hybrid ensemble model</strong>. We will see if we can improve the multiclass classification capacity through heterogeneous collection of classifiers.</p>
+<p>Then we use <em>hard voting method</em> in which the class (tissue) that are predicted most frequently will be chosen. For instance, if logistic regression and random forest both predict class 1 for an observation and XGBoost predict class 3 for the observation, then the observation is classified as Class 1.</p>
+<pre><code class="language-r">predicted.classes.lasso &lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &quot;class&quot;)), levels = c(0:12))
+predicted.classes.random.forest &lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &quot;class&quot;)), levels = c(0:12))
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T); xgb.pred = as.data.frame(xgb.pred)
+predicted.classes.xgboost = factor(apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)]), levels = c(0:12))
+
+
+results &lt;- as.data.frame(rbind(predicted.classes.lasso,predicted.classes.random.forest,predicted.classes.xgboost))
+
+results &lt;- data.frame(model1 = predicted.classes.lasso,
+                      model2 = predicted.classes.random.forest,
+                      model3 = predicted.classes.xgboost)
+chooseBestModel &lt;- function(x) {
+    tabulatedOutcomes &lt;- table(x)
+    sortedOutcomes &lt;- sort(tabulatedOutcomes, decreasing=TRUE)
+    mostCommonLabel &lt;- names(sortedOutcomes)[1]
+    mostCommonLabel
+}
+</code></pre>
+<p>We make prediction on the data it hasn&rsquo;t seen yet (test data).</p>
+<pre><code class="language-r"># Make prediction on test data
+predicted.classes&lt;-factor(as.integer(as.vector(apply(results, 1, chooseBestModel))), levels = c(0:12))
+observed.classes&lt;-test.label
+</code></pre>
+<pre><code class="language-r"># Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+</code></pre>
+<p><img src="/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<pre><code class="language-r"># Model accuracy
+result&lt;-mean(predicted.classes == observed.classes)
+print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result)))
+</code></pre>
+<pre><code>## [1] &quot;Final Accuracy = 95.46%&quot;
+</code></pre>
+<p>This gives as output an accuracy of 95.46%.</p>
+<p>XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.</p>
+<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Model </th>
+   <th style="text-align:left;"> Accuracy </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Multinomial Logistic Regression with Lasso </td>
+   <td style="text-align:left;"> 93.95% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Random Forest </td>
+   <td style="text-align:left;"> 93.76% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> XGBoost </td>
+   <td style="text-align:left;"> 95.09% </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Hybrid Ensemble Model </td>
+   <td style="text-align:left;"> 95.46% </td>
+  </tr>
+</tbody>
+</table>
+<p><strong>References</strong><br />
+[1] GTEx Portal, <a href="https://gtexportal.org/home/" target="_blank" rel="noopener">https://gtexportal.org/home/</a><br />
+[2] Gradient Boosting Machines, UC Business Analytics R Programming Guide, <a href="http://uc-r.github.io/gbm_regression" target="_blank" rel="noopener">http://uc-r.github.io/gbm_regression</a><br />
+[3] An Introduction to glmnet, <a href="https://glmnet.stanford.edu/articles/glmnet.html" target="_blank" rel="noopener">https://glmnet.stanford.edu/articles/glmnet.html</a><br />
+[4] R for Statistical Learning, Chapter 24 Regularization, <a href="https://daviddalpiaz.github.io/r4sl/regularization.html" target="_blank" rel="noopener">https://daviddalpiaz.github.io/r4sl/regularization.html</a></p>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/multinomial-logistic-regression-with-lasso/">Multinomial Logistic Regression with Lasso</a>
+  
+  <a class="badge badge-light" href="/tag/random-forest/">Random Forest</a>
+  
+  <a class="badge badge-light" href="/tag/gradient-boosting/">Gradient Boosting</a>
+  
+  <a class="badge badge-light" href="/tag/hybrid-ensemble-model/">Hybrid Ensemble Model</a>
+  
+</div>
+
+
+
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://jungyeol-kim.github.io/project/hybrid-ensemble-model/&amp;text=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data" target="_blank" rel="noopener" class="share-btn-twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://jungyeol-kim.github.io/project/hybrid-ensemble-model/&amp;t=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data" target="_blank" rel="noopener" class="share-btn-facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data&amp;body=https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" target="_blank" rel="noopener" class="share-btn-email">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://jungyeol-kim.github.io/project/hybrid-ensemble-model/&amp;title=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data" target="_blank" rel="noopener" class="share-btn-linkedin">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data%20https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" target="_blank" rel="noopener" class="share-btn-whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://jungyeol-kim.github.io/project/hybrid-ensemble-model/&amp;title=Hybrid%20Ensemble%20Learning:%20Predicting%20all%2013%20types%20of%20brain%20tissues%20using%20high%20dimensional%20gene%20expression%20data" target="_blank" rel="noopener" class="share-btn-weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://jungyeol-kim.github.io/"><img class="avatar mr-3 avatar-circle" src="/author/avatar_huf2c02756eaceac7bbb00925fc2aa93be_70074_270x270_fill_q75_lanczos_center.jpg" alt=""></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://jungyeol-kim.github.io/"></a></h5>
+      
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+    <div class="project-related-pages content-widget-hr">
+      
+      
+
+      
+      
+      
+
+      
+      
+      
+
+      
+      
+      
+    </div>
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-modules" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/highlight.min.js" integrity="sha512-TDKKr+IvoqZnPzc3l35hdjpHD0m+b2EC2SrLEgKDRWpxf2rFCxemkgvJ5kfU48ip+Y+m2XVKyOCD85ybtlZDmw==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/r.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/python.min.js" crossorigin="anonymous"></script>
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.2.0/languages/latex.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.min.js" integrity="sha512-SeiQaaDh73yrb56sTW/RgVdi/mMqNeM2oBwubFHagc5BkixSpP1fvqF47mKzPGWYSSy4RwbBunrJBQ4Co8fRWA==" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+      
+      <script id="search-hit-fuse-template" type="text/x-template">
+        <div class="search-hit" id="summary-{{key}}">
+          <div class="search-hit-content">
+            <div class="search-hit-name">
+              <a href="{{relpermalink}}">{{title}}</a>
+              <div class="article-metadata search-hit-type">{{type}}</div>
+              <p class="search-hit-description">{{snippet}}</p>
+            </div>
+          </div>
+        </div>
+      </script>
+      
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+      
+      
+      
+      
+      
+      
+      
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+      
+      
+    
+    
+    <script src="/en/js/wowchemy.min.d68ecd57c0ec1f1f61d65fd568f1c3a0.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

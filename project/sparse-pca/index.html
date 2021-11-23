@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Exploratory Data Analysis We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis." />
+  <meta name="description" content="Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." />
 
   
   <link rel="alternate" hreflang="en-us" href="https://jungyeol-kim.github.io/project/sparse-pca/" />
@@ -297,7 +297,7 @@
   <meta property="og:site_name" content="Jungyeol Kim" />
   <meta property="og:url" content="https://jungyeol-kim.github.io/project/sparse-pca/" />
   <meta property="og:title" content="Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data | Jungyeol Kim" />
-  <meta property="og:description" content="Exploratory Data Analysis We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
+  <meta property="og:description" content="Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" />
     <meta property="twitter:image" content="https://jungyeol-kim.github.io/project/sparse-pca/featured.png" /><meta property="og:locale" content="en-us" />
   
     
@@ -347,7 +347,7 @@
       "url": "https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_192x192_fill_lanczos_center_3.png"
     }
   },
-  "description": "Exploratory Data Analysis We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis."
+  "description": "Exploratory Data Analysis Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting."
 }
 </script>
 
@@ -726,7 +726,9 @@
 
     <div class="article-style">
       <h2 id="exploratory-data-analysis">Exploratory Data Analysis</h2>
-<p>We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.</p>
+<p>Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving <strong>Multinomial logistic regression with lasso</strong>, <strong>Random forest</strong>, and <strong>Gradient boosting</strong>. More importantly, we will combine all the three heterogeneous models into single strong classifier, <strong>Hybrid ensemble model</strong>. We will compare individual classification models with our hybrid ensemble model.</p>
+<p>The raw data can be obtained from <a href="https://gtexportal.org/home/" target="_blank" rel="noopener">https://gtexportal.org/home/</a>. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.</p>
+<p>Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.</p>
 <p>
 
 
@@ -1042,9 +1044,9 @@ text(25, 1000, labels =  &quot;PCA&quot;, cex=1.3)
   
   <a class="badge badge-light" href="/tag/r/">R</a>
   
-  <a class="badge badge-light" href="/tag/v2v/">V2V</a>
+  <a class="badge badge-light" href="/tag/pca/">PCA</a>
   
-  <a class="badge badge-light" href="/tag/network/">Network</a>
+  <a class="badge badge-light" href="/tag/sparse-pca/">Sparse PCA</a>
   
 </div>
 

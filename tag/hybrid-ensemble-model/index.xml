@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hybrid Ensemble Model | Jungyeol Kim</title>
+    <link>https://jungyeol-kim.github.io/tag/hybrid-ensemble-model/</link>
+      <atom:link href="https://jungyeol-kim.github.io/tag/hybrid-ensemble-model/index.xml" rel="self" type="application/rss+xml" />
+    <description>Hybrid Ensemble Model</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate>
+    <image>
+      <url>https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
+      <title>Hybrid Ensemble Model</title>
+      <link>https://jungyeol-kim.github.io/tag/hybrid-ensemble-model/</link>
+    </image>
+    
+    <item>
+      <title>Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data</title>
+      <link>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</link>
+      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
+      <guid>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</guid>
+      <description>&lt;script src=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
+&lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
+&lt;p&gt;The dataset I use here is equivalent to the one in the previous project. We thus omit summary statistics.&lt;/p&gt;
+&lt;p&gt;Get the libraries and import the data:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final.data.scale &amp;lt;- get(load(&amp;quot;final_data_scale.RData&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We split the data into training (80%) and testing data (20%).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data1&amp;lt;-final.data.scale[final.data.scale$SMTSD %like% &amp;quot;Brain&amp;quot;,]
+data1$SMTSD&amp;lt;-as.factor(data1$SMTSD)
+
+smtsd = data1$SMTSD
+label = factor(as.integer(data1$SMTSD)-1, levels = c(0:12))
+data1$SMTSD = NULL
+
+set.seed(2021)
+n = nrow(data1)
+train.index = sample(n,floor(0.8*n))
+train.data = as.matrix(data1[train.index,])
+train.label = label[train.index]
+test.data = as.matrix(data1[-train.index,])
+test.label = label[-train.index]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;multiclass-logistic-regression-with-lasso&#34;&gt;Multiclass Logistic Regression with Lasso&lt;/h2&gt;
+&lt;p&gt;We perform logistic regression with lasso in which the number of classes is more than two. Lasso penalized regression has the advantage of being able to handle the case of $ p\geq N $, where $ p $ is the number of features and $ N $ is the number of observations. Suppose that the prediction space has K distinct levels $ G={1,2,&amp;hellip;,K} $. We model&lt;/p&gt;
+&lt;p&gt;\begin{align}
+P(G=k|X=x)=\frac{\exp^{\beta_{ok}+\beta^T_k x}}{\sum_{l=1}^{K} \exp^{\beta_{ol}+\beta^T_l x}}.
+\end{align}&lt;/p&gt;
+&lt;p&gt;Let $ Y $ be the $ N \times K $ prediction space matrix, with element $ y_{lk}=1 $ if observation $ i $ belongs to class $ k $ and $ y_{lk}=0 $ otherwise. Let $ x \in \mathbb{R}^p $ be an $ i^{th} $ observation. $ \beta $ is a $ p\times K $ matrix of coefficients. $ \beta_k $ indicates the $ k^{th} $ column and $ \beta^{(j)} $ indicates the $ j^{th} $ row. The lasso penalized negative log-likelihood function and the objective is to minimize the following function:&lt;/p&gt;
+&lt;p&gt;\begin{align}
+L({\beta_{ok},\beta_k}_1^K) = - \left[  \frac{1}{N} \sum_{i=1}^K \left( y_{il}(\beta_{ok}+x^T_i \beta_k) - \log \sum_{l=1}^K y_{il}(\beta_{ol}+x^T_i \beta_l) \right)\right] + \lambda \left[ \sum_{j=1}^p ||\beta_j||_1 \right].
+\end{align}&lt;/p&gt;
+&lt;p&gt;We consider a grouped-lasso penalty on all the K coefficients for a particular variable, which makes them all be zero or nonzero together.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;x &amp;lt;- train.data
+y &amp;lt;- train.label
+m.lasso.grouped &amp;lt;- cv.glmnet(x = x ,y = y, family = c(&amp;quot;multinomial&amp;quot;), type.multinomial = &amp;quot;grouped&amp;quot;, alpha = 1) # type.measure = &amp;quot;deviance&amp;quot; or &amp;quot;mse&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;10 fold Cross Validation to minimize the deviance which is minus twice the log-likelihood on the left-out data, $ −2 \log(\mathcal{Lik}) $. We compare cross-validation errors while fine-tuning hyperparameter $ \lambda $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(m.lasso.grouped)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We choose lambda=lambda.1se which is the largest value of $ \lambda $ such that error is within 1 standard error of the cross-validated errors for lambda.min (i.e., $ \lambda $ of minimum mean cross-validated error). This allow us to select 312 features (out of 19,248 features) that are useful, discarding the useless or redundant features.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;print(paste(&amp;quot;Number of Selected Features =&amp;quot;,sprintf(&amp;quot;%d&amp;quot;, m.lasso.grouped$nzero[m.lasso.grouped$index[2]]-1)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Number of Selected Features = 312&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well with the data it hasn&amp;rsquo;t seen yet (test data). Therefore, we compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes &amp;lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+observed.classes &amp;lt;- test.label
+
+# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 93.95%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 93.95%. Can we do better?&lt;/p&gt;
+&lt;h2 id=&#34;multiclass-random-forest&#34;&gt;Multiclass Random Forest&lt;/h2&gt;
+&lt;p&gt;Random forest combines weak learners trained on bootstrap samples at the end of the process by majority rules and further reduce the variance by forcing to split only a subset of predictors. We use cross-validation to estimate the prediction error. Out-of-Bag harnesses the similar idea. Since for each tree we only use the bootstrapped observations, there are some samples left that are not used for training/building the tree. We refer these observations that are not used as the out-of-bag (OOB) observations.&lt;/p&gt;
+&lt;p&gt;Ready to tune the number of the trees in the bag (ntree) and the number of randomly chosen predictors at each split (mtry).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;fit.rf.ntree &amp;lt;- randomForest(x = train.data, y = train.label, mtry=100, ntree=500)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(1:500,fit.rf$err.rate[,1], pch=16, type=&amp;quot;b&amp;quot;, xlab=&amp;quot;Trees&amp;quot;, ylab=&amp;quot;OOB error&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We may need 200 trees to settle the OOB errors.&lt;/p&gt;
+&lt;p&gt;Now we fix the number of the trees in the bag, ntree=200, We only want to compare the OOB error[200] to see the impact of the number of randomly chosen predictors at each split (mtry). Here we loop mtry from 100 to 10000 and return the testing OOB errors.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Tuning hyperparameter (mtry)
+mtry_set&amp;lt;-c(seq(100,1000,100),seq(2000,10000,1000))
+rf.error.p &amp;lt;- rep(NA,length(mtry_set))  # set up a vector of length 30
+fit.rf&amp;lt;-vector(mode = &#39;list&#39;, length = length(mtry_set))
+for (p in 1:length(mtry_set))  # repeat the following code inside { } 30 times
+{
+  fit.rf[[p]] &amp;lt;- randomForest(x = train.data, y = train.label, mtry=mtry_set[p], ntree=200) # This works
+  rf.error.p[p] &amp;lt;- fit.rf[[p]]$err.rate[200,1]  # collecting oob mse based on 200 trees
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(mtry_set, rf.error.p, pch=16, xlab=&amp;quot;mtry&amp;quot;, ylab=&amp;quot;OOB error of mtry&amp;quot;, type=&#39;b&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We select the final model by taking mtry = 2000 and make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Final model
+optimal.mtry&amp;lt;-2000
+final.rf&amp;lt;-fit.rf[[which(mtry_set==optimal.mtry)]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes &amp;lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+observed.classes &amp;lt;- test.label
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 93.76%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 93.76%.&lt;/p&gt;
+&lt;h2 id=&#34;multiclass-gradient-boosting-xgboost&#34;&gt;Multiclass Gradient Boosting (XGBoost)&lt;/h2&gt;
+&lt;p&gt;Random forest combines weak leaners trained on bootstrap samples at the end of the process by majority rules, thus models are built independently. On the other hand, Gradient Boosting combines weak learners along the way in an adaptive way, thus the new model is affected by the performance of a previously built model.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;coef.1se &amp;lt;- coef(m.lasso.grouped, s=&amp;quot;lambda.1se&amp;quot;)  #s=c(&amp;quot;lambda.1se&amp;quot;,&amp;quot;lambda.min&amp;quot;) or lambda value
+coef.1se &amp;lt;- coef.1se$`0`[which(coef.1se$`0`!=0),]   # get the non=zero coefficients
+var.1se &amp;lt;- rownames(as.matrix(coef.1se))[-1] # output the names
+
+
+
+train.data.bt&amp;lt;-train.data[, colnames(train.data) %in% var.1se]
+train.label.bt&amp;lt;-as.integer(as.character(train.label))
+test.data.bt&amp;lt;-test.data[, colnames(test.data) %in% var.1se]
+test.label.bt&amp;lt;-as.integer(as.character(test.label))
+
+train_matrix &amp;lt;- xgb.DMatrix(data = train.data.bt, label = train.label.bt)
+test_matrix &amp;lt;- xgb.DMatrix(data = test.data.bt, label = test.label.bt)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We tune the XGBoost model by passing the following parameters as a list object to the params argument:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;eta:controls the learning rate&lt;/li&gt;
+&lt;li&gt;max_depth: tree depth&lt;/li&gt;
+&lt;li&gt;subsample: percent of training data to sample for each tree&lt;/li&gt;
+&lt;li&gt;colsample_bytrees: percent of columns to sample from for each tree&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# create hyperparameter grid
+hyper_grid &amp;lt;- expand.grid(
+  eta = c(.01, .1),
+  max_depth = c(1, 3, 5, 7),
+  # min_child_weight = c(1, 3, 5, 7),
+  subsample = c(.8), 
+  colsample_bytree = c(.8),
+  optimal_trees = 0,
+  mlogloss = 0
+)
+
+
+# total number of combinations
+nrow(hyper_grid)
+
+for(i in 1:nrow(hyper_grid)) {
+  # create parameter list
+  params &amp;lt;- list(
+    objective = &amp;quot;multi:softprob&amp;quot;,
+    eval_metric = &amp;quot;mlogloss&amp;quot;,
+    num_class = length(unique(train.label.bt)), 
+    eta = hyper_grid$eta[i],
+    max_depth = hyper_grid$max_depth[i],
+    # min_child_weight = hyper_grid$min_child_weight[i],
+    subsample = hyper_grid$subsample[i],
+    colsample_bytree = hyper_grid$colsample_bytree[i]
+  )
+  
+  # reproducibility
+  set.seed(2021)
+  
+  # train model
+  xgb.tune &amp;lt;- xgb.cv(
+    params = params,
+    data = train_matrix,
+    nrounds = 5000,
+    nfold = 5,
+    verbose = 0,               # silent,
+    early_stopping_rounds = 10, # stop if no improvement for 10 consecutive trees
+    prediction = TRUE
+  )
+  
+  hyper_grid$optimal_trees[i] &amp;lt;- which.min(xgb.tune$evaluation_log$test_mlogloss_mean)
+  hyper_grid$mlogloss[i] &amp;lt;- min(xgb.tune$evaluation_log$test_mlogloss_mean)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;hyper_grid
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 1 0.01         1       0.8              0.8          3207 0.2100542
+## 2 0.10         1       0.8              0.8           403 0.2079252
+## 3 0.01         3       0.8              0.8          1374 0.2089576
+## 4 0.10         3       0.8              0.8           163 0.2069576
+## 5 0.01         5       0.8              0.8          1412 0.2143006
+## 6 0.10         5       0.8              0.8           185 0.2174870
+## 7 0.01         7       0.8              0.8          1412 0.2153698
+## 8 0.10         7       0.8              0.8           185 0.2208950
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;hyper_grid[which.min(hyper_grid$mlogloss),]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 4 0.1         3       0.8              0.8           163 0.2069576
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We choose the best hyperparameters in the above search and develop the best model using the chosen hyperparameters.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;opt.point&amp;lt;-which.min(hyper_grid$mlogloss)
+# parameter list
+params &amp;lt;- list(
+  objective = &amp;quot;multi:softprob&amp;quot;,
+  eval_metric = &amp;quot;mlogloss&amp;quot;,
+  num_class = length(unique(test.label.bt)), 
+  eta = hyper_grid$eta[opt.point],
+  max_depth = hyper_grid$max_depth[opt.point],
+  # min_child_weight = hyper_grid$min_child_weight[i],
+  subsample = hyper_grid$subsample[opt.point],
+  colsample_bytree = hyper_grid$colsample_bytree[opt.point]
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Final model
+xgb.fit.final &amp;lt;- xgboost(
+  params = params,
+  data = train_matrix,
+  verbose = 0,
+  nrounds = hyper_grid$optimal_trees[opt.point],
+  early_stopping_rounds = 10 # stop if no improvement for 10 consecutive trees
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Predict outcomes with the test data
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T)
+xgb.pred = as.data.frame(xgb.pred)
+
+xgb.pred$prediction = apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)])
+xgb.pred$label = test.label.bt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = xgb.pred$label, predictions = xgb.pred$prediction)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;result = sum(xgb.pred$prediction==xgb.pred$label)/nrow(xgb.pred)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 95.09%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 95.09%.&lt;/p&gt;
+&lt;h2 id=&#34;hybrid-ensemble-learning&#34;&gt;Hybrid Ensemble Learning&lt;/h2&gt;
+&lt;p&gt;We have thus far developed the three models. Both random forest and gradient boosting are ensemble methods in which &lt;strong&gt;similar&lt;/strong&gt; types of weak learners are combined to develop strong learner.&lt;/p&gt;
+&lt;p&gt;On the other hand, we here combine three &lt;strong&gt;different&lt;/strong&gt; types of weak learners, two ensemble models and one logistic regression, into &lt;strong&gt;hybrid ensemble model&lt;/strong&gt;. We will see if we can improve the multiclass classification capacity through heterogeneous collection of classifiers.&lt;/p&gt;
+&lt;p&gt;Then we use &lt;em&gt;hard voting method&lt;/em&gt; in which the class (tissue) that are predicted most frequently will be chosen. For instance, if logistic regression and random forest both predict class 1 for an observation and XGBoost predict class 3 for the observation, then the observation is classified as Class 1.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;predicted.classes.lasso &amp;lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+predicted.classes.random.forest &amp;lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T); xgb.pred = as.data.frame(xgb.pred)
+predicted.classes.xgboost = factor(apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)]), levels = c(0:12))
+
+
+results &amp;lt;- as.data.frame(rbind(predicted.classes.lasso,predicted.classes.random.forest,predicted.classes.xgboost))
+
+results &amp;lt;- data.frame(model1 = predicted.classes.lasso,
+                      model2 = predicted.classes.random.forest,
+                      model3 = predicted.classes.xgboost)
+chooseBestModel &amp;lt;- function(x) {
+    tabulatedOutcomes &amp;lt;- table(x)
+    sortedOutcomes &amp;lt;- sort(tabulatedOutcomes, decreasing=TRUE)
+    mostCommonLabel &amp;lt;- names(sortedOutcomes)[1]
+    mostCommonLabel
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes&amp;lt;-factor(as.integer(as.vector(apply(results, 1, chooseBestModel))), levels = c(0:12))
+observed.classes&amp;lt;-test.label
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-32-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 95.46%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 95.46%.&lt;/p&gt;
+&lt;p&gt;XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.&lt;/p&gt;
+&lt;table class=&#34; lightable-classic&#34; style=&#34;font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style=&#34;text-align:left;&#34;&gt; Model &lt;/th&gt;
+   &lt;th style=&#34;text-align:left;&#34;&gt; Accuracy &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Multinomial Logistic Regression with Lasso &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 93.95% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Random Forest &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 93.76% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; XGBoost &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 95.09% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Hybrid Ensemble Model &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 95.46% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;br /&gt;
+[1] GTEx Portal, &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;&lt;br /&gt;
+[2] Gradient Boosting Machines, UC Business Analytics R Programming Guide, &lt;a href=&#34;http://uc-r.github.io/gbm_regression&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;http://uc-r.github.io/gbm_regression&lt;/a&gt;&lt;br /&gt;
+[3] An Introduction to glmnet, &lt;a href=&#34;https://glmnet.stanford.edu/articles/glmnet.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://glmnet.stanford.edu/articles/glmnet.html&lt;/a&gt;&lt;br /&gt;
+[4] R for Statistical Learning, Chapter 24 Regularization, &lt;a href=&#34;https://daviddalpiaz.github.io/r4sl/regularization.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://daviddalpiaz.github.io/r4sl/regularization.html&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
