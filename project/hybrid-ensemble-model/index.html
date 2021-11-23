@@ -778,7 +778,6 @@ predicted.classes &lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.da
 observed.classes &lt;- test.label
 
 # Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
@@ -829,7 +828,6 @@ observed.classes &lt;- test.label
 </code></pre>
 <p>We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.</p>
 <pre><code class="language-r"># Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
@@ -848,7 +846,7 @@ print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result
 <p>This gives as output an accuracy of 93.76%.</p>
 <h2 id="multiclass-gradient-boosting-xgboost">Multiclass Gradient Boosting (XGBoost)</h2>
 <p>Random forest combines weak leaners trained on bootstrap samples at the end of the process by majority rules, thus models are built independently. On the other hand, Gradient Boosting combines weak learners along the way in an adaptive way, thus the new model is affected by the performance of a previously built model.</p>
-<pre><code class="language-r">coef.1se &lt;- coef(m.lasso.grouped, s=&quot;lambda.1se&quot;)  #s=c(&quot;lambda.1se&quot;,&quot;lambda.min&quot;) or lambda value
+<pre><code class="language-r">coef.1se &lt;- coef(m.lasso.grouped, s=&quot;lambda.1se&quot;) 
 coef.1se &lt;- coef.1se$`0`[which(coef.1se$`0`!=0),]   # get the non=zero coefficients
 var.1se &lt;- rownames(as.matrix(coef.1se))[-1] # output the names
 
@@ -873,7 +871,6 @@ test_matrix &lt;- xgb.DMatrix(data = test.data.bt, label = test.label.bt)
 hyper_grid &lt;- expand.grid(
   eta = c(.01, .1),
   max_depth = c(1, 3, 5, 7),
-  # min_child_weight = c(1, 3, 5, 7),
   subsample = c(.8), 
   colsample_bytree = c(.8),
   optimal_trees = 0,
@@ -892,7 +889,6 @@ for(i in 1:nrow(hyper_grid)) {
     num_class = length(unique(train.label.bt)), 
     eta = hyper_grid$eta[i],
     max_depth = hyper_grid$max_depth[i],
-    # min_child_weight = hyper_grid$min_child_weight[i],
     subsample = hyper_grid$subsample[i],
     colsample_bytree = hyper_grid$colsample_bytree[i]
   )
@@ -941,7 +937,6 @@ params &lt;- list(
   num_class = length(unique(test.label.bt)), 
   eta = hyper_grid$eta[opt.point],
   max_depth = hyper_grid$max_depth[opt.point],
-  # min_child_weight = hyper_grid$min_child_weight[i],
   subsample = hyper_grid$subsample[opt.point],
   colsample_bytree = hyper_grid$colsample_bytree[opt.point]
 )
@@ -965,7 +960,6 @@ xgb.pred$label = test.label.bt
 </code></pre>
 <p>We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.</p>
 <pre><code class="language-r"># Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &lt;- confusion_matrix(targets = xgb.pred$label, predictions = xgb.pred$prediction)
 plot_confusion_matrix(
   conf_mat[[&quot;Confusion Matrix&quot;]][[1]],
@@ -1009,7 +1003,6 @@ predicted.classes&lt;-factor(as.integer(as.vector(apply(results, 1, chooseBestMo
 observed.classes&lt;-test.label
 </code></pre>
 <pre><code class="language-r"># Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&quot;Confusion Matrix&quot;]][[1]],

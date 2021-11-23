@@ -74,7 +74,6 @@ predicted.classes &amp;lt;- factor(as.vector(predict(m.lasso.grouped, newx = tes
 observed.classes &amp;lt;- test.label
 
 # Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
@@ -125,7 +124,6 @@ observed.classes &amp;lt;- test.label
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
@@ -144,7 +142,7 @@ print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;q
 &lt;p&gt;This gives as output an accuracy of 93.76%.&lt;/p&gt;
 &lt;h2 id=&#34;multiclass-gradient-boosting-xgboost&#34;&gt;Multiclass Gradient Boosting (XGBoost)&lt;/h2&gt;
 &lt;p&gt;Random forest combines weak leaners trained on bootstrap samples at the end of the process by majority rules, thus models are built independently. On the other hand, Gradient Boosting combines weak learners along the way in an adaptive way, thus the new model is affected by the performance of a previously built model.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;coef.1se &amp;lt;- coef(m.lasso.grouped, s=&amp;quot;lambda.1se&amp;quot;)  #s=c(&amp;quot;lambda.1se&amp;quot;,&amp;quot;lambda.min&amp;quot;) or lambda value
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;coef.1se &amp;lt;- coef(m.lasso.grouped, s=&amp;quot;lambda.1se&amp;quot;) 
 coef.1se &amp;lt;- coef.1se$`0`[which(coef.1se$`0`!=0),]   # get the non=zero coefficients
 var.1se &amp;lt;- rownames(as.matrix(coef.1se))[-1] # output the names
 
@@ -169,7 +167,6 @@ test_matrix &amp;lt;- xgb.DMatrix(data = test.data.bt, label = test.label.bt)
 hyper_grid &amp;lt;- expand.grid(
   eta = c(.01, .1),
   max_depth = c(1, 3, 5, 7),
-  # min_child_weight = c(1, 3, 5, 7),
   subsample = c(.8), 
   colsample_bytree = c(.8),
   optimal_trees = 0,
@@ -188,7 +185,6 @@ for(i in 1:nrow(hyper_grid)) {
     num_class = length(unique(train.label.bt)), 
     eta = hyper_grid$eta[i],
     max_depth = hyper_grid$max_depth[i],
-    # min_child_weight = hyper_grid$min_child_weight[i],
     subsample = hyper_grid$subsample[i],
     colsample_bytree = hyper_grid$colsample_bytree[i]
   )
@@ -237,7 +233,6 @@ params &amp;lt;- list(
   num_class = length(unique(test.label.bt)), 
   eta = hyper_grid$eta[opt.point],
   max_depth = hyper_grid$max_depth[opt.point],
-  # min_child_weight = hyper_grid$min_child_weight[i],
   subsample = hyper_grid$subsample[opt.point],
   colsample_bytree = hyper_grid$colsample_bytree[opt.point]
 )
@@ -261,7 +256,6 @@ xgb.pred$label = test.label.bt
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &amp;lt;- confusion_matrix(targets = xgb.pred$label, predictions = xgb.pred$prediction)
 plot_confusion_matrix(
   conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
@@ -305,7 +299,6 @@ predicted.classes&amp;lt;-factor(as.integer(as.vector(apply(results, 1, chooseBe
 observed.classes&amp;lt;-test.label
 &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
-# confusionMatrix(predicted.classes,observed.classes)
 conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
 plot_confusion_matrix(
   conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
