@@ -13,77 +13,347 @@
     </image>
     
     <item>
-      <title>Coevolution in Multiplex Networks</title>
-      <link>https://jungyeol-kim.github.io/project/multiplex-networks-1/</link>
+      <title>Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data</title>
+      <link>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/multiplex-networks-1/</guid>
-      <description>&lt;p&gt;Agents in complex systems interact in many ways: People are influenced by multiple channels of social interaction such as friendship and work partnership, and multiple means of transportation such as avian and ground transportation constitute the global transportation infrastructure. Such systems can best be represented as multiplex networks with multiple types of links. Each link type in the system defines a network layer, which is by no means in isolation but coexists and cooperates with other layers to fulfill the system’s function. Such coupling and interplay of network layers can result in emergent structural and dynamical impact in nontrivial ways, rendering the understanding based on the single-network approach incomplete.&lt;/p&gt;
-&lt;p&gt;Towards understanding such multiplex systems, we propose a modeling framework based on coevolution of network layers, with a class of minimalistic growing network models as working examples. We examine how the entangled growth of coevolving layers can shape the network structure and show analytically and numerically that the coevolution can induce strong degree correlations across layers, as well as modulate degree distributions. We further show that such a coevolution-induced correlated multiplexity can alter the system’s response to the dynamical process, exemplified by the suppressed susceptibility to a social cascade process.&lt;/p&gt;
-&lt;p&gt;
+      <guid>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</guid>
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiclass Logistic Regression with Lasso&lt;/li&gt;
+&lt;li&gt;Multiclass Random Forest&lt;/li&gt;
+&lt;li&gt;Multiclass Gradient Boosting (XGBoost)&lt;/li&gt;
+&lt;li&gt;Hybrid Ensemble Learning&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
+&lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
+&lt;p&gt;Get the libraries and import the data:&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final.data.scale &amp;lt;- get(load(&amp;quot;final_data_scale.RData&amp;quot;))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We split the data into training (80%) and testing data (20%).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;data1&amp;lt;-final.data.scale[final.data.scale$SMTSD %like% &amp;quot;Brain&amp;quot;,]
+data1$SMTSD&amp;lt;-as.factor(data1$SMTSD)
+
+smtsd = data1$SMTSD
+label = factor(as.integer(data1$SMTSD)-1, levels = c(0:12))
+data1$SMTSD = NULL
+
+set.seed(2021)
+n = nrow(data1)
+train.index = sample(n,floor(0.8*n))
+train.data = as.matrix(data1[train.index,])
+train.label = label[train.index]
+test.data = as.matrix(data1[-train.index,])
+test.label = label[-train.index]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2 id=&#34;multiclass-logistic-regression-with-lasso&#34;&gt;Multiclass Logistic Regression with Lasso&lt;/h2&gt;
+&lt;p&gt;We perform logistic regression with lasso in which the number of classes is more than two. Lasso penalized regression has the advantage of being able to handle the case of $ p\geq N $, where $ p $ is the number of features and $ N $ is the number of observations. Suppose that the prediction space has K distinct levels $ G={1,2,&amp;hellip;,K} $. We model&lt;/p&gt;
+&lt;p&gt;\begin{align}
+P(G=k|X=x)=\frac{\exp^{\beta_{ok}+\beta^T_k x}}{\sum_{l=1}^{K} \exp^{\beta_{ol}+\beta^T_l x}}.
+\end{align}&lt;/p&gt;
+&lt;p&gt;Let $ Y $ be the $ N \times K $ prediction space matrix, with element $ y_{lk}=1 $ if observation $ i $ belongs to class $ k $ and $ y_{lk}=0 $ otherwise. Let $ x \in \mathbb{R}^p $ be an $ i^{th} $ observation. $ \beta $ is a $ p\times K $ matrix of coefficients. $ \beta_k $ indicates the $ k^{th} $ column and $ \beta^{(j)} $ indicates the $ j^{th} $ row. The lasso penalized negative log-likelihood function and the objective is to minimize the following function:&lt;/p&gt;
+&lt;p&gt;\begin{align}
+L({\beta_{ok},\beta_k}_1^K) = - \left[  \frac{1}{N} \sum_{i=1}^K \left( y_{il}(\beta_{ok}+x^T_i \beta_k) - \log \sum_{l=1}^K y_{il}(\beta_{ol}+x^T_i \beta_l) \right)\right] + \lambda \left[ \sum_{j=1}^p ||\beta_j||_1 \right].
+\end{align}&lt;/p&gt;
+&lt;p&gt;We consider a grouped-lasso penalty on all the K coefficients for a particular variable, which makes them all be zero or nonzero together.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;x &amp;lt;- train.data
+y &amp;lt;- train.label
+m.lasso.grouped &amp;lt;- cv.glmnet(x = x ,y = y, family = c(&amp;quot;multinomial&amp;quot;), type.multinomial = &amp;quot;grouped&amp;quot;, alpha = 1) # type.measure = &amp;quot;deviance&amp;quot; or &amp;quot;mse&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;10 fold Cross Validation to minimize the deviance which is minus twice the log-likelihood on the left-out data, $ −2 \log(\mathcal{Lik}) $. We compare cross-validation errors while fine-tuning hyperparameter $ \lambda $.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(m.lasso.grouped)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We choose lambda=lambda.1se which is the largest value of $ \lambda $ such that error is within 1 standard error of the cross-validated errors for lambda.min (i.e., $ \lambda $ of minimum mean cross-validated error). This allow us to select 312 features (out of 19,248 features) that are useful, discarding the useless or redundant features.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;print(paste(&amp;quot;Number of Selected Features =&amp;quot;,sprintf(&amp;quot;%d&amp;quot;, m.lasso.grouped$nzero[m.lasso.grouped$index[2]]-1)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Number of Selected Features = 312&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well with the data it hasn&amp;rsquo;t seen yet (test data). Therefore, we compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes &amp;lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+observed.classes &amp;lt;- test.label
+
+# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 93.95%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 93.95%. Can we do better?&lt;/p&gt;
+&lt;h2 id=&#34;multiclass-random-forest&#34;&gt;Multiclass Random Forest&lt;/h2&gt;
+&lt;p&gt;Random forest combines weak learners trained on bootstrap samples at the end of the process by majority rules and further reduce the variance by forcing to split only a subset of predictors. We use cross-validation to estimate the prediction error. Out-of-Bag harnesses the similar idea. Since for each tree we only use the bootstrapped observations, there are some samples left that are not used for training/building the tree. We refer these observations that are not used as the out-of-bag (OOB) observations.&lt;/p&gt;
+&lt;p&gt;Ready to tune the number of the trees in the bag (ntree) and the number of randomly chosen predictors at each split (mtry).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;fit.rf.ntree &amp;lt;- randomForest(x = train.data, y = train.label, mtry=100, ntree=500)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(1:500,fit.rf$err.rate[,1], pch=16, type=&amp;quot;b&amp;quot;, xlab=&amp;quot;Trees&amp;quot;, ylab=&amp;quot;OOB error&amp;quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We may need 200 trees to settle the OOB errors.&lt;/p&gt;
+&lt;p&gt;Now we fix the number of the trees in the bag, ntree=200, We only want to compare the OOB error[200] to see the impact of the number of randomly chosen predictors at each split (mtry). Here we loop mtry from 100 to 10000 and return the testing OOB errors.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Tuning hyperparameter (mtry)
+mtry_set&amp;lt;-c(seq(100,1000,100),seq(2000,10000,1000))
+rf.error.p &amp;lt;- rep(NA,length(mtry_set))  # set up a vector of length 30
+fit.rf&amp;lt;-vector(mode = &#39;list&#39;, length = length(mtry_set))
+for (p in 1:length(mtry_set))  # repeat the following code inside { } 30 times
+{
+  fit.rf[[p]] &amp;lt;- randomForest(x = train.data, y = train.label, mtry=mtry_set[p], ntree=200) # This works
+  rf.error.p[p] &amp;lt;- fit.rf[[p]]$err.rate[200,1]  # collecting oob mse based on 200 trees
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;plot(mtry_set, rf.error.p, pch=16, xlab=&amp;quot;mtry&amp;quot;, ylab=&amp;quot;OOB error of mtry&amp;quot;, type=&#39;b&#39;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We select the final model by taking mtry = 2000 and make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Final model
+optimal.mtry&amp;lt;-2000
+final.rf&amp;lt;-fit.rf[[which(mtry_set==optimal.mtry)]]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes &amp;lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+observed.classes &amp;lt;- test.label
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 93.76%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 93.76%.&lt;/p&gt;
+&lt;h2 id=&#34;multiclass-gradient-boosting-xgboost&#34;&gt;Multiclass Gradient Boosting (XGBoost)&lt;/h2&gt;
+&lt;p&gt;Random forest combines weak leaners trained on bootstrap samples at the end of the process by majority rules, thus models are built independently. On the other hand, Gradient Boosting combines weak learners along the way in an adaptive way, thus the new model is affected by the performance of a previously built model.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;coef.1se &amp;lt;- coef(m.lasso.grouped, s=&amp;quot;lambda.1se&amp;quot;)  #s=c(&amp;quot;lambda.1se&amp;quot;,&amp;quot;lambda.min&amp;quot;) or lambda value
+coef.1se &amp;lt;- coef.1se$`0`[which(coef.1se$`0`!=0),]   # get the non=zero coefficients
+var.1se &amp;lt;- rownames(as.matrix(coef.1se))[-1] # output the names
 
 
 
+train.data.bt&amp;lt;-train.data[, colnames(train.data) %in% var.1se]
+train.label.bt&amp;lt;-as.integer(as.character(train.label))
+test.data.bt&amp;lt;-test.data[, colnames(test.data) %in% var.1se]
+test.label.bt&amp;lt;-as.integer(as.character(test.label))
+
+train_matrix &amp;lt;- xgb.DMatrix(data = train.data.bt, label = train.label.bt)
+test_matrix &amp;lt;- xgb.DMatrix(data = test.data.bt, label = test.label.bt)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We tune the XGBoost model by passing the following parameters as a list object to the params argument:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;eta:controls the learning rate&lt;/li&gt;
+&lt;li&gt;max_depth: tree depth&lt;/li&gt;
+&lt;li&gt;subsample: percent of training data to sample for each tree&lt;/li&gt;
+&lt;li&gt;colsample_bytrees: percent of columns to sample from for each tree&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# create hyperparameter grid
+hyper_grid &amp;lt;- expand.grid(
+  eta = c(.01, .1),
+  max_depth = c(1, 3, 5, 7),
+  # min_child_weight = c(1, 3, 5, 7),
+  subsample = c(.8), 
+  colsample_bytree = c(.8),
+  optimal_trees = 0,
+  mlogloss = 0
+)
 
 
+# total number of combinations
+nrow(hyper_grid)
+
+for(i in 1:nrow(hyper_grid)) {
+  # create parameter list
+  params &amp;lt;- list(
+    objective = &amp;quot;multi:softprob&amp;quot;,
+    eval_metric = &amp;quot;mlogloss&amp;quot;,
+    num_class = length(unique(train.label.bt)), 
+    eta = hyper_grid$eta[i],
+    max_depth = hyper_grid$max_depth[i],
+    # min_child_weight = hyper_grid$min_child_weight[i],
+    subsample = hyper_grid$subsample[i],
+    colsample_bytree = hyper_grid$colsample_bytree[i]
+  )
+  
+  # reproducibility
+  set.seed(2021)
+  
+  # train model
+  xgb.tune &amp;lt;- xgb.cv(
+    params = params,
+    data = train_matrix,
+    nrounds = 5000,
+    nfold = 5,
+    verbose = 0,               # silent,
+    early_stopping_rounds = 10, # stop if no improvement for 10 consecutive trees
+    prediction = TRUE
+  )
+  
+  hyper_grid$optimal_trees[i] &amp;lt;- which.min(xgb.tune$evaluation_log$test_mlogloss_mean)
+  hyper_grid$mlogloss[i] &amp;lt;- min(xgb.tune$evaluation_log$test_mlogloss_mean)
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;hyper_grid
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 1 0.01         1       0.8              0.8          3207 0.2100542
+## 2 0.10         1       0.8              0.8           403 0.2079252
+## 3 0.01         3       0.8              0.8          1374 0.2089576
+## 4 0.10         3       0.8              0.8           163 0.2069576
+## 5 0.01         5       0.8              0.8          1412 0.2143006
+## 6 0.10         5       0.8              0.8           185 0.2174870
+## 7 0.01         7       0.8              0.8          1412 0.2153698
+## 8 0.10         7       0.8              0.8           185 0.2208950
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;hyper_grid[which.min(hyper_grid$mlogloss),]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##   eta max_depth subsample colsample_bytree optimal_trees  mlogloss
+## 4 0.1         3       0.8              0.8           163 0.2069576
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We choose the best hyperparameters in the above search and develop the best model using the chosen hyperparameters.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;opt.point&amp;lt;-which.min(hyper_grid$mlogloss)
+# parameter list
+params &amp;lt;- list(
+  objective = &amp;quot;multi:softprob&amp;quot;,
+  eval_metric = &amp;quot;mlogloss&amp;quot;,
+  num_class = length(unique(test.label.bt)), 
+  eta = hyper_grid$eta[opt.point],
+  max_depth = hyper_grid$max_depth[opt.point],
+  # min_child_weight = hyper_grid$min_child_weight[i],
+  subsample = hyper_grid$subsample[opt.point],
+  colsample_bytree = hyper_grid$colsample_bytree[opt.point]
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Final model
+xgb.fit.final &amp;lt;- xgboost(
+  params = params,
+  data = train_matrix,
+  verbose = 0,
+  nrounds = hyper_grid$optimal_trees[opt.point],
+  early_stopping_rounds = 10 # stop if no improvement for 10 consecutive trees
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Predict outcomes with the test data
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T)
+xgb.pred = as.data.frame(xgb.pred)
+
+xgb.pred$prediction = apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)])
+xgb.pred$label = test.label.bt
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We then check how good our model works well. We compute the confusion matrix which illustrates model accuracy by comparing the “true” vs. “predicted” class for all observation in the test set.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = xgb.pred$label, predictions = xgb.pred$prediction)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-28-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;result = sum(xgb.pred$prediction==xgb.pred$label)/nrow(xgb.pred)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 95.09%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 95.09%.&lt;/p&gt;
+&lt;h2 id=&#34;hybrid-ensemble-learning&#34;&gt;Hybrid Ensemble Learning&lt;/h2&gt;
+&lt;p&gt;We have thus far developed the three models. Both random forest and gradient boosting are ensemble methods in which &lt;strong&gt;similar&lt;/strong&gt; types of weak learners are combined to develop strong learner.&lt;/p&gt;
+&lt;p&gt;On the other hand, we here combine three &lt;strong&gt;different&lt;/strong&gt; types of weak learners, two ensemble models and one logistic regression, into &lt;strong&gt;hybrid ensemble model&lt;/strong&gt;. We will see if we can improve the multiclass classification capacity through heterogeneous collection of classifiers.&lt;/p&gt;
+&lt;p&gt;Then we use &lt;em&gt;hard voting method&lt;/em&gt; in which the class (tissue) that are predicted most frequently will be chosen. For instance, if logistic regression and random forest both predict class 1 for an observation and XGBoost predict class 3 for the observation, then the observation is classified as Class 1.&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;predicted.classes.lasso &amp;lt;- factor(as.vector(predict(m.lasso.grouped, newx = test.data, s = m.lasso.grouped$lambda.1se, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+predicted.classes.random.forest &amp;lt;- factor(as.vector(predict(final.rf , newdata = test.data, type = &amp;quot;class&amp;quot;)), levels = c(0:12))
+xgb.pred = predict(xgb.fit.final, test.data.bt, reshape=T); xgb.pred = as.data.frame(xgb.pred)
+predicted.classes.xgboost = factor(apply(xgb.pred,1,function(x) as.integer(as.character(levels(label)))[which.max(x)]), levels = c(0:12))
 
 
+results &amp;lt;- as.data.frame(rbind(predicted.classes.lasso,predicted.classes.random.forest,predicted.classes.xgboost))
 
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;1&#34; srcset=&#34;
-               /project/multiplex-networks-1/fig1_hu67c2b0b9cb7e5b663c8671b2ea6a6e51_166246_33b3d6b12468404da11d5ed1364d877f.png 400w,
-               /project/multiplex-networks-1/fig1_hu67c2b0b9cb7e5b663c8671b2ea6a6e51_166246_e470ecba72372ae19a27a9424cb10f30.png 760w,
-               /project/multiplex-networks-1/fig1_hu67c2b0b9cb7e5b663c8671b2ea6a6e51_166246_1200x1200_fit_lanczos_3.png 1200w&#34;
-               src=&#34;https://jungyeol-kim.github.io/project/multiplex-networks-1/fig1_hu67c2b0b9cb7e5b663c8671b2ea6a6e51_166246_33b3d6b12468404da11d5ed1364d877f.png&#34;
-               width=&#34;643&#34;
-               height=&#34;760&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Correlated multiplexity and connectivity of multiplex random networks</title>
-      <link>https://jungyeol-kim.github.io/project/multiplex-networks-2/</link>
-      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/multiplex-networks-2/</guid>
-      <description>&lt;p&gt;Nodes in a complex networked system often engage in more than one type of interactions among them; they form a multiplex network with multiple types of links. In real-world complex systems, a node’s degree for one type of links and that for the other are not randomly distributed but correlated, which we term correlated multiplexity. In this paper, we study a simple model of multiplex random networks and demonstrate that the correlated multiplexity can drastically affect the properties of a giant component in the network. Specifically, when the degrees of a node for different interactions in a duplex Erdo ̋s–Re ́nyi network are maximally correlated, the network contains the giant component for any nonzero link density. In contrast, when the degrees of a node are maximally anti-correlated, the emergence of the giant component is significantly delayed, yet the entire network becomes connected into a single component at a finite link density. We also discuss the mixing patterns and the cases with imperfect correlated multiplexity.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img alt=&#34;1&#34; srcset=&#34;
-               /project/multiplex-networks-2/fig1_hu32b13cdc638d5c48483fe2f0e7b3eeb1_334727_c24d779686604e66ffe885f15ddb7def.png 400w,
-               /project/multiplex-networks-2/fig1_hu32b13cdc638d5c48483fe2f0e7b3eeb1_334727_d79c469d5ca6b646ac84baa80f8e593a.png 760w,
-               /project/multiplex-networks-2/fig1_hu32b13cdc638d5c48483fe2f0e7b3eeb1_334727_1200x1200_fit_lanczos_3.png 1200w&#34;
-               src=&#34;https://jungyeol-kim.github.io/project/multiplex-networks-2/fig1_hu32b13cdc638d5c48483fe2f0e7b3eeb1_334727_c24d779686604e66ffe885f15ddb7def.png&#34;
-               width=&#34;760&#34;
-               height=&#34;505&#34;
-               loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
+results &amp;lt;- data.frame(model1 = predicted.classes.lasso,
+                      model2 = predicted.classes.random.forest,
+                      model3 = predicted.classes.xgboost)
+chooseBestModel &amp;lt;- function(x) {
+    tabulatedOutcomes &amp;lt;- table(x)
+    sortedOutcomes &amp;lt;- sort(tabulatedOutcomes, decreasing=TRUE)
+    mostCommonLabel &amp;lt;- names(sortedOutcomes)[1]
+    mostCommonLabel
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We make prediction on the data it hasn&amp;rsquo;t seen yet (test data).&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Make prediction on test data
+predicted.classes&amp;lt;-factor(as.integer(as.vector(apply(results, 1, chooseBestModel))), levels = c(0:12))
+observed.classes&amp;lt;-test.label
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Confusion matrix
+# confusionMatrix(predicted.classes,observed.classes)
+conf_mat &amp;lt;- confusion_matrix(targets = observed.classes, predictions = predicted.classes)
+plot_confusion_matrix(
+  conf_mat[[&amp;quot;Confusion Matrix&amp;quot;]][[1]],
+  add_normalized = FALSE,
+  add_row_percentages = FALSE,
+  add_col_percentages = FALSE
+)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/Hybrid Ensemble Model/index.en3_files/figure-html/unnamed-chunk-32-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;# Model accuracy
+result&amp;lt;-mean(predicted.classes == observed.classes)
+print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;quot;, 100*result)))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;Final Accuracy = 95.46%&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;This gives as output an accuracy of 95.46%.&lt;/p&gt;
+&lt;p&gt;XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.&lt;/p&gt;
+&lt;table&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style=&#34;text-align:left;&#34;&gt; Model &lt;/th&gt;
+   &lt;th style=&#34;text-align:left;&#34;&gt; Accuracy &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Multinomial Logistic Regression with Lasso &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 93.95% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Random Forest &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 93.76% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; XGBoost &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 95.09% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; Hybrid Ensemble Model &lt;/td&gt;
+   &lt;td style=&#34;text-align:left;&#34;&gt; 95.46% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;&lt;strong&gt;References&lt;/strong&gt;&lt;br /&gt;
+[1] GTEx Portal, &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;&lt;br /&gt;
+[2] Gradient Boosting Machines, UC Business Analytics R Programming Guide, &lt;a href=&#34;http://uc-r.github.io/gbm_regression&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;http://uc-r.github.io/gbm_regression&lt;/a&gt;&lt;br /&gt;
+[3] An Introduction to glmnet, &lt;a href=&#34;https://glmnet.stanford.edu/articles/glmnet.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://glmnet.stanford.edu/articles/glmnet.html&lt;/a&gt;&lt;br /&gt;
+[4] R for Statistical Learning, Chapter 24 Regularization, &lt;a href=&#34;https://daviddalpiaz.github.io/r4sl/regularization.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://daviddalpiaz.github.io/r4sl/regularization.html&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -167,273 +437,17 @@ For the model $ Y=X\beta^{\star}+\epsilon $, where $ \epsilon \sim \text{subG}(\
     </item>
     
     <item>
-      <title>Predicting whether income exceeds $50K/yr based on census data</title>
-      <link>https://jungyeol-kim.github.io/project/ensemble-method/</link>
-      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/ensemble-method/</guid>
-      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
-&lt;p&gt;We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig1.png&#34; alt=&#34;1&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig2.png&#34; alt=&#34;2&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-Throughout this report, we use &lt;em&gt;primary tissues (SMTS)&lt;/em&gt; rather than tissues (SMTSD) for simple visualization.&lt;/p&gt;
-&lt;h2 id=&#34;principal-component-analysis-pca&#34;&gt;Principal Component Analysis (PCA)&lt;/h2&gt;
-&lt;p&gt;We aim to see if the standard PCA can reveal the difference in gene expressions among different tissue types. We first perform PCA and compute the principal components.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021) 
-pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
-
-a&amp;lt;-summary(pca.results)$importance[2,1:35]
-b&amp;lt;-summary(pca.results)$importance[3,1:35]
-pc_var_expd&amp;lt;-data.frame(&#39;PC&#39;=1:length(a), &#39;pct&#39;=a, &#39;pct_cum&#39;=b, stringsAsFactors = F)
-
-ggplot(data = pc_var_expd, aes(x = as.factor(PC))) +
-  geom_col(aes(y = pct)) +
-  geom_line(aes(y = pct_cum, group = 1)) +
-  geom_hline(yintercept = 0.75, linetype=&amp;quot;dashed&amp;quot;, color = &amp;quot;gray50&amp;quot;, size=0.5) +
-  geom_point(aes(y = pct_cum)) +
-  labs(x = &amp;quot;Principal component&amp;quot;, y = &amp;quot;Proportion of Variance&amp;quot;) +
-  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75), limits = c(0, 0.755)) +
-  theme_classic() +
-  theme(axis.text.x = element_text(size = 18), axis.title.x=element_text(size=24, face=&amp;quot;bold&amp;quot;)) +
-  theme(axis.text.y = element_text(size = 18), axis.title.y=element_text(size=24, face=&amp;quot;bold&amp;quot;))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig3.png&#34; alt=&#34;3&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;We notice is that the first 35 components explains over $75% $ of variance. &lt;em&gt;We can effectively reduce dimensionality from $19248 $ to $35 $ while only loosing about $25% $ of variance.&lt;/em&gt; We also notice that we can actually explain over $28% $ of variance with just the first two components and over $26% $ of variance with just the first and the third components. The pairwise scatter plot of principal components are displayed as follows. Figure 4(b) shows that, with only two components, we can clearly see separation of Brain, Pituitary, Blood, and Testis tissues from all others.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;temp&amp;lt;-data.frame(pca.results$x, &#39;SMTS&#39;=as.factor(final.data.orig$SMTS), &#39;SMTSD&#39;=as.factor(final.data.orig$SMTSD))
-
-gg_color_hue &amp;lt;- function(n) {
-  hues = seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
-}
-cols = gg_color_hue(length(levels(temp$SMTS)))
-fills = gg_color_hue(length(levels(temp$SMTS)))
-alphas = rep(0.2,length(levels(temp$SMTS)))
-
-# SMTS.select&amp;lt;-levels(temp$SMTS)
-SMTS.select&amp;lt;-c(&amp;quot;Brain&amp;quot;, &amp;quot;Blood&amp;quot;, &amp;quot;Testis&amp;quot;, &amp;quot;Pituitary&amp;quot;)
-
-c.color&amp;lt;-which(!levels(temp$SMTS) %in% SMTS.select)
-cols[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
-fills[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
-alphas[c.color]&amp;lt;-0
-
-means &amp;lt;- temp %&amp;gt;%
-  filter(SMTS %in% SMTS.select) %&amp;gt;%
-  group_by(SMTS) %&amp;gt;%
-  summarise(mean_PC1 = mean(PC1),
-            mean_PC3 = mean(PC3)) 
-
-ggplot(temp, aes(x = PC1, y = PC3, label = SMTS)) + 
-  geom_point(aes(colour = SMTS), size=0.5, alpha=0.7, show.legend = FALSE) +
-  stat_ellipse(aes(fill = SMTS, alpha = SMTS), level = .95, geom = &amp;quot;polygon&amp;quot;, lty=0, show.legend = FALSE) +
-  geom_label(data = means, aes(x = mean_PC1, y = mean_PC3, color = SMTS), show.legend = FALSE) +
-  scale_colour_manual(values=cols) +
-  scale_fill_manual(values=fills) +
-  scale_alpha_manual(values=alphas) +
-  theme_classic() +
-  theme(axis.text.x = element_text(size = 17), axis.title.x=element_text(size=20, face=&amp;quot;bold&amp;quot;)) +
-  theme(axis.text.y = element_text(size = 17), axis.title.y=element_text(size=20, face=&amp;quot;bold&amp;quot;))
-@
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig4.png&#34; alt=&#34;4&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig5.png&#34; alt=&#34;5&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;h2 id=&#34;sparse-pca&#34;&gt;Sparse PCA&lt;/h2&gt;
-&lt;p&gt;Since standard PCA does not impose sparsity constraints on the loadings of principal directions, principal components are usually linear combinations of all input features and the none of the loadings are zero in general as shown in Figure 6. However, in Sparse PCA, principal components are a linear combination of a subset of input features, which provides an improved interpretability of the model. Sparse PCA prevents overfitting in this data where the number of features, $p $, is greater than the number of observations, $N $.&lt;/p&gt;
-&lt;p&gt;We therefore use sparse PCA introduced by [1,2]. This Sparse PCA aims to minimize the following problem:
-$$\text{min } f(A,B) = \frac{1}{2} ||X - XBA^T||^2 + \alpha ||B||_1 + \frac{1}{2} \beta ||B||^2, $$
-$$\text{ subject to } A^T A = I. $$
-where the matrix B is the sparse weight (loadings) matrix and A is an orthonormal matrix. This uses the elastic net regularization. The principal components $Z $ are formed as $Z = XB $.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021)
-sparsepca.results.0.3 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-3, beta=1e-3, center = FALSE, scale = FALSE)
-sparsepca.results.0.4 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-4, beta=1e-4, center = FALSE, scale = FALSE)
-pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
-
-num.zero.0.3&amp;lt;-vector()
-num.zero.0.4&amp;lt;-vector()
-num.zero.pca&amp;lt;-vector()
-num.zero.0.3[1]&amp;lt;-sum(sparsepca.results.0.3$loadings[,1]==0)
-num.zero.0.4[1]&amp;lt;-sum(sparsepca.results.0.4$loadings[,1]==0)
-num.zero.pca[1]&amp;lt;-sum(pca.results$rotation[,1]==0)
-for(i in 2:35){
-  PCs&amp;lt;-1:i
-  num.zero.0.3[i]&amp;lt;-sum(rowSums(sparsepca.results.0.3$loadings[,PCs])==0)
-  num.zero.0.4[i]&amp;lt;-sum(rowSums(sparsepca.results.0.4$loadings[,PCs])==0)
-  num.zero.pca[i]&amp;lt;-sum(rowSums(pca.results$rotation[,PCs])==0)
-}
-
-plot(1:35, num.zero.0.3, xlab=&amp;quot;Number of Principle Components&amp;quot;, 
-    ylab=&amp;quot;Number of Common Features with Zero Coefficients across PC&#39;s&amp;quot;, 
-    type=&#39;o&#39;, lty=2, pch=1, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-points(1:35, num.zero.0.4, type=&#39;o&#39;, lty=3, pch=3, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-points(1:35, num.zero.pca, type=&#39;o&#39;,  lty=1, pch=5, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-abline(h=19248, lty=3)
-text(25, 18500, labels = &amp;quot;Total number of features p=19248&amp;quot;, cex=1.3)
-text(25, 13500, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-3,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-3)), cex=1.3)
-text(25, 5000, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-4,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-4)), cex=1.3)
-text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig6.png&#34; alt=&#34;6&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Figure 6 confirms that non-negligible number of features have zero coefficient across the principal components. For example, for Sparse PCA under the condition of $\alpha=10^{-3} $ and $\beta=10^{-3} $, $11518 $ features out of $p=19248 $ features have zero coefficients across the first $35 $ principal components. The number of features with zero coefficients across the PCs would decrease with the number of PCs, but there is a diminishing return. This indicates that the $11518 $ features are likely to be uninformative. Since $\alpha $ is a sparsity controlling parameter and $\beta $ controls the amount of ridge shrinkage, higher values of $\alpha $ lead to sparser components. Refer to the two different results of sparse PCA with two different parameters in Figure 6.&lt;/p&gt;
-&lt;p&gt;We now plot Sparse PCA (with parameters $\alpha=10^{-3} $ and $\beta=10^{-3} $) to see if the Sparse PCA can reveal the difference in gene expressions among different tissue types. Figure 7 shows the pairwise scatter plots of the principal components. We can clearly see separation of &lt;em&gt;Brain, Testis, Pituitary, Skin, Muscle, Heart, Blood Vessel, Nerve, Blood, Liver, Lung, Adipose Tissue&lt;/em&gt;, and &lt;em&gt;Spleen&lt;/em&gt; tissues from all others.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig7.png&#34; alt=&#34;7&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
-&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
-&lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
-&lt;!-- Press, 2008. --&gt;
-&lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
-&lt;!-- Cluster_analysis, 2021. --&gt;
-&lt;!-- [5] D. M. Witten and R. Tibshirani, “A framework for feature selection in clustering,” Journal of the American --&gt;
-&lt;!-- Statistical Association, vol. 105, no. 490, pp. 713–726, 2010. --&gt;
-&lt;!-- [6] Y. Kondo, M. Salibiann-Barrera, and R. H. Zamar, “Robustification of the sparse k-means clustering al- gorithm.” https://www.birs.ca/workshops/2011/11w5051/files/06_Yumi_Kondo_A_Robust_And_Sparse_K_ Means_Clustering_Algorithm.pdf, 2011. --&gt;
-&lt;!-- [7] M. Chavent, A. Mourer, and M. Olteanu, “Sparse weighted k-means for mixed data.” https://cran.r-project. org/web/packages/vimpclust/vignettes/sparsewkm.html#ref-sparsekmeans, 2020. --&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data</title>
       <link>https://jungyeol-kim.github.io/project/sparse-pca/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/sparse-pca/</guid>
-      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Exploratory Data Analysis&lt;/li&gt;
+&lt;li&gt;Principal Component Analysis (PCA)&lt;/li&gt;
+&lt;li&gt;Sparse PCA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
 &lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
 &lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
 &lt;p&gt;Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
@@ -813,6 +827,18 @@ text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
       <guid>https://jungyeol-kim.github.io/project/v2v/</guid>
       <description>&lt;p&gt;V2V technologies bridge two infrastructures: communication and transportation. These infrastructures are interconnected and interdependent. To capture this inter-dependence, which may vary in time and space, we propose a new methodology for modeling information propagation between V2V-enabled vehicles. The model is based on a continuous-time Markov chain which is shown to converge, under appropriate conditions, to a set of clustered epidemiological differential equations. The fraction of vehicles which have received a message, as a function of space and time may be obtained as a solution of these differential equations, which can be solved efficiently, independently of the number of vehicles.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Objective:&lt;/strong&gt; Our goal is to model the spread of V2V messages and obatin the fraction of vehicles which have received a message in arbitrary transportation networks, as a function of space and time, using a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Mobility and Communicatoin Networks&lt;/li&gt;
+&lt;li&gt;Generation of Differential Equations&lt;/li&gt;
+&lt;li&gt;Solving Differential Equations
+&lt;ul&gt;
+&lt;li&gt;Initial condition&lt;/li&gt;
+&lt;li&gt;Solution of differential equations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Generating Figures&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;mobility-and-communicatoin-networks&#34;&gt;Mobility and Communicatoin Networks&lt;/h2&gt;
 &lt;!-- ### Case study: Grid road topology --&gt;
 &lt;p&gt;

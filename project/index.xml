@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Posts | Jungyeol Kim</title>
+    <title>Projects | Jungyeol Kim</title>
     <link>https://jungyeol-kim.github.io/project/</link>
       <atom:link href="https://jungyeol-kim.github.io/project/index.xml" rel="self" type="application/rss+xml" />
-    <description>Posts</description>
+    <description>Projects</description>
     <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><lastBuildDate>Tue, 01 Dec 2020 21:13:14 -0500</lastBuildDate>
     <image>
       <url>https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_512x512_fill_lanczos_center_3.png</url>
-      <title>Posts</title>
+      <title>Projects</title>
       <link>https://jungyeol-kim.github.io/project/</link>
     </image>
     
@@ -92,11 +92,15 @@
       <link>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</guid>
-      <description>&lt;script src=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiclass Logistic Regression with Lasso&lt;/li&gt;
+&lt;li&gt;Multiclass Random Forest&lt;/li&gt;
+&lt;li&gt;Multiclass Gradient Boosting (XGBoost)&lt;/li&gt;
+&lt;li&gt;Hybrid Ensemble Learning&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
 &lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
-&lt;p&gt;The dataset I use here is equivalent to the one in the previous project. We thus omit summary statistics.&lt;/p&gt;
 &lt;p&gt;Get the libraries and import the data:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final.data.scale &amp;lt;- get(load(&amp;quot;final_data_scale.RData&amp;quot;))
 &lt;/code&gt;&lt;/pre&gt;
@@ -394,7 +398,7 @@ print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;q
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This gives as output an accuracy of 95.46%.&lt;/p&gt;
 &lt;p&gt;XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.&lt;/p&gt;
-&lt;table class=&#34; lightable-classic&#34; style=&#34;font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style=&#34;text-align:left;&#34;&gt; Model &lt;/th&gt;
@@ -466,273 +470,17 @@ print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;q
     </item>
     
     <item>
-      <title>Predicting whether income exceeds $50K/yr based on census data</title>
-      <link>https://jungyeol-kim.github.io/project/ensemble-method/</link>
-      <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/ensemble-method/</guid>
-      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
-&lt;p&gt;We remove $49 $ genes (features) from the raw data since the genes has no value across all samples. We then standardize the data before performing (sparse) principal component analysis. Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig1.png&#34; alt=&#34;1&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig2.png&#34; alt=&#34;2&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-Throughout this report, we use &lt;em&gt;primary tissues (SMTS)&lt;/em&gt; rather than tissues (SMTSD) for simple visualization.&lt;/p&gt;
-&lt;h2 id=&#34;principal-component-analysis-pca&#34;&gt;Principal Component Analysis (PCA)&lt;/h2&gt;
-&lt;p&gt;We aim to see if the standard PCA can reveal the difference in gene expressions among different tissue types. We first perform PCA and compute the principal components.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021) 
-pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
-
-a&amp;lt;-summary(pca.results)$importance[2,1:35]
-b&amp;lt;-summary(pca.results)$importance[3,1:35]
-pc_var_expd&amp;lt;-data.frame(&#39;PC&#39;=1:length(a), &#39;pct&#39;=a, &#39;pct_cum&#39;=b, stringsAsFactors = F)
-
-ggplot(data = pc_var_expd, aes(x = as.factor(PC))) +
-  geom_col(aes(y = pct)) +
-  geom_line(aes(y = pct_cum, group = 1)) +
-  geom_hline(yintercept = 0.75, linetype=&amp;quot;dashed&amp;quot;, color = &amp;quot;gray50&amp;quot;, size=0.5) +
-  geom_point(aes(y = pct_cum)) +
-  labs(x = &amp;quot;Principal component&amp;quot;, y = &amp;quot;Proportion of Variance&amp;quot;) +
-  scale_y_continuous(breaks = c(0, 0.25, 0.5, 0.75), limits = c(0, 0.755)) +
-  theme_classic() +
-  theme(axis.text.x = element_text(size = 18), axis.title.x=element_text(size=24, face=&amp;quot;bold&amp;quot;)) +
-  theme(axis.text.y = element_text(size = 18), axis.title.y=element_text(size=24, face=&amp;quot;bold&amp;quot;))
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig3.png&#34; alt=&#34;3&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;We notice is that the first 35 components explains over $75% $ of variance. &lt;em&gt;We can effectively reduce dimensionality from $19248 $ to $35 $ while only loosing about $25% $ of variance.&lt;/em&gt; We also notice that we can actually explain over $28% $ of variance with just the first two components and over $26% $ of variance with just the first and the third components. The pairwise scatter plot of principal components are displayed as follows. Figure 4(b) shows that, with only two components, we can clearly see separation of Brain, Pituitary, Blood, and Testis tissues from all others.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;temp&amp;lt;-data.frame(pca.results$x, &#39;SMTS&#39;=as.factor(final.data.orig$SMTS), &#39;SMTSD&#39;=as.factor(final.data.orig$SMTSD))
-
-gg_color_hue &amp;lt;- function(n) {
-  hues = seq(15, 375, length = n + 1)
-  hcl(h = hues, l = 65, c = 100)[1:n]
-}
-cols = gg_color_hue(length(levels(temp$SMTS)))
-fills = gg_color_hue(length(levels(temp$SMTS)))
-alphas = rep(0.2,length(levels(temp$SMTS)))
-
-# SMTS.select&amp;lt;-levels(temp$SMTS)
-SMTS.select&amp;lt;-c(&amp;quot;Brain&amp;quot;, &amp;quot;Blood&amp;quot;, &amp;quot;Testis&amp;quot;, &amp;quot;Pituitary&amp;quot;)
-
-c.color&amp;lt;-which(!levels(temp$SMTS) %in% SMTS.select)
-cols[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
-fills[c.color]&amp;lt;-&amp;quot;#A5A5A5&amp;quot;
-alphas[c.color]&amp;lt;-0
-
-means &amp;lt;- temp %&amp;gt;%
-  filter(SMTS %in% SMTS.select) %&amp;gt;%
-  group_by(SMTS) %&amp;gt;%
-  summarise(mean_PC1 = mean(PC1),
-            mean_PC3 = mean(PC3)) 
-
-ggplot(temp, aes(x = PC1, y = PC3, label = SMTS)) + 
-  geom_point(aes(colour = SMTS), size=0.5, alpha=0.7, show.legend = FALSE) +
-  stat_ellipse(aes(fill = SMTS, alpha = SMTS), level = .95, geom = &amp;quot;polygon&amp;quot;, lty=0, show.legend = FALSE) +
-  geom_label(data = means, aes(x = mean_PC1, y = mean_PC3, color = SMTS), show.legend = FALSE) +
-  scale_colour_manual(values=cols) +
-  scale_fill_manual(values=fills) +
-  scale_alpha_manual(values=alphas) +
-  theme_classic() +
-  theme(axis.text.x = element_text(size = 17), axis.title.x=element_text(size=20, face=&amp;quot;bold&amp;quot;)) +
-  theme(axis.text.y = element_text(size = 17), axis.title.y=element_text(size=20, face=&amp;quot;bold&amp;quot;))
-@
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig4.png&#34; alt=&#34;4&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig5.png&#34; alt=&#34;5&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;h2 id=&#34;sparse-pca&#34;&gt;Sparse PCA&lt;/h2&gt;
-&lt;p&gt;Since standard PCA does not impose sparsity constraints on the loadings of principal directions, principal components are usually linear combinations of all input features and the none of the loadings are zero in general as shown in Figure 6. However, in Sparse PCA, principal components are a linear combination of a subset of input features, which provides an improved interpretability of the model. Sparse PCA prevents overfitting in this data where the number of features, $p $, is greater than the number of observations, $N $.&lt;/p&gt;
-&lt;p&gt;We therefore use sparse PCA introduced by [1,2]. This Sparse PCA aims to minimize the following problem:
-$$\text{min } f(A,B) = \frac{1}{2} ||X - XBA^T||^2 + \alpha ||B||_1 + \frac{1}{2} \beta ||B||^2, $$
-$$\text{ subject to } A^T A = I. $$
-where the matrix B is the sparse weight (loadings) matrix and A is an orthonormal matrix. This uses the elastic net regularization. The principal components $Z $ are formed as $Z = XB $.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;set.seed(2021)
-sparsepca.results.0.3 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-3, beta=1e-3, center = FALSE, scale = FALSE)
-sparsepca.results.0.4 &amp;lt;- sparsepca::rspca(final.data.scale, k=35, alpha=1e-4, beta=1e-4, center = FALSE, scale = FALSE)
-pca.results &amp;lt;- irlba::prcomp_irlba(final.data.scale, n=50, center = FALSE, scale. = FALSE)
-
-num.zero.0.3&amp;lt;-vector()
-num.zero.0.4&amp;lt;-vector()
-num.zero.pca&amp;lt;-vector()
-num.zero.0.3[1]&amp;lt;-sum(sparsepca.results.0.3$loadings[,1]==0)
-num.zero.0.4[1]&amp;lt;-sum(sparsepca.results.0.4$loadings[,1]==0)
-num.zero.pca[1]&amp;lt;-sum(pca.results$rotation[,1]==0)
-for(i in 2:35){
-  PCs&amp;lt;-1:i
-  num.zero.0.3[i]&amp;lt;-sum(rowSums(sparsepca.results.0.3$loadings[,PCs])==0)
-  num.zero.0.4[i]&amp;lt;-sum(rowSums(sparsepca.results.0.4$loadings[,PCs])==0)
-  num.zero.pca[i]&amp;lt;-sum(rowSums(pca.results$rotation[,PCs])==0)
-}
-
-plot(1:35, num.zero.0.3, xlab=&amp;quot;Number of Principle Components&amp;quot;, 
-    ylab=&amp;quot;Number of Common Features with Zero Coefficients across PC&#39;s&amp;quot;, 
-    type=&#39;o&#39;, lty=2, pch=1, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-points(1:35, num.zero.0.4, type=&#39;o&#39;, lty=3, pch=3, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-points(1:35, num.zero.pca, type=&#39;o&#39;,  lty=1, pch=5, cex.lab=1.6, cex.axis=1.3, ylim=c(0,19300))
-abline(h=19248, lty=3)
-text(25, 18500, labels = &amp;quot;Total number of features p=19248&amp;quot;, cex=1.3)
-text(25, 13500, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-3,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-3)), cex=1.3)
-text(25, 5000, labels =  expression(paste(&amp;quot;Sparse PCA with &amp;quot;, alpha,&amp;quot;=&amp;quot;,10^-4,&amp;quot;, &amp;quot;, beta,&amp;quot;=&amp;quot;,10^-4)), cex=1.3)
-text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig6.png&#34; alt=&#34;6&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;Figure 6 confirms that non-negligible number of features have zero coefficient across the principal components. For example, for Sparse PCA under the condition of $\alpha=10^{-3} $ and $\beta=10^{-3} $, $11518 $ features out of $p=19248 $ features have zero coefficients across the first $35 $ principal components. The number of features with zero coefficients across the PCs would decrease with the number of PCs, but there is a diminishing return. This indicates that the $11518 $ features are likely to be uninformative. Since $\alpha $ is a sparsity controlling parameter and $\beta $ controls the amount of ridge shrinkage, higher values of $\alpha $ lead to sparser components. Refer to the two different results of sparse PCA with two different parameters in Figure 6.&lt;/p&gt;
-&lt;p&gt;We now plot Sparse PCA (with parameters $\alpha=10^{-3} $ and $\beta=10^{-3} $) to see if the Sparse PCA can reveal the difference in gene expressions among different tissue types. Figure 7 shows the pairwise scatter plots of the principal components. We can clearly see separation of &lt;em&gt;Brain, Testis, Pituitary, Skin, Muscle, Heart, Blood Vessel, Nerve, Blood, Liver, Lung, Adipose Tissue&lt;/em&gt;, and &lt;em&gt;Spleen&lt;/em&gt; tissues from all others.&lt;/p&gt;
-&lt;p&gt;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-&lt;figure  &gt;
-  &lt;div class=&#34;d-flex justify-content-center&#34;&gt;
-    &lt;div class=&#34;w-100&#34; &gt;&lt;img src=&#34;fig7.png&#34; alt=&#34;7&#34; loading=&#34;lazy&#34; data-zoomable /&gt;&lt;/div&gt;
-  &lt;/div&gt;&lt;/figure&gt;
-&lt;/p&gt;
-&lt;p&gt;[1] N. B. Erichson, P. Zheng, K. Manohar, S. L. Brunton, J. N. Kutz, and A. Y. Aravkin, “Sparse principal component analysis via variable projection,” SIAM Journal on Applied Mathematics, vol. 80, no. 2, pp. 977–1002, 2020.&lt;/p&gt;
-&lt;p&gt;[2] N. B. Erichson, “Spca via variable projection.” &lt;a href=&#34;https://github.com/erichson/spca,&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://github.com/erichson/spca,&lt;/a&gt; 2018.&lt;/p&gt;
-&lt;!-- [3] C. Manning and P. Raghavan, “H. sch  ̈, utze, introduction to,” Information Retrieval,. Cambridge University --&gt;
-&lt;!-- Press, 2008. --&gt;
-&lt;!-- [4] Cluster analysis, “Cluster analysis — Wikipedia, the free encyclopedia.” https://en.wikipedia.org/wiki/ --&gt;
-&lt;!-- Cluster_analysis, 2021. --&gt;
-&lt;!-- [5] D. M. Witten and R. Tibshirani, “A framework for feature selection in clustering,” Journal of the American --&gt;
-&lt;!-- Statistical Association, vol. 105, no. 490, pp. 713–726, 2010. --&gt;
-&lt;!-- [6] Y. Kondo, M. Salibiann-Barrera, and R. H. Zamar, “Robustification of the sparse k-means clustering al- gorithm.” https://www.birs.ca/workshops/2011/11w5051/files/06_Yumi_Kondo_A_Robust_And_Sparse_K_ Means_Clustering_Algorithm.pdf, 2011. --&gt;
-&lt;!-- [7] M. Chavent, A. Mourer, and M. Olteanu, “Sparse weighted k-means for mixed data.” https://cran.r-project. org/web/packages/vimpclust/vignettes/sparsewkm.html#ref-sparsekmeans, 2020. --&gt;
-</description>
-    </item>
-    
-    <item>
       <title>Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data</title>
       <link>https://jungyeol-kim.github.io/project/sparse-pca/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/sparse-pca/</guid>
-      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Exploratory Data Analysis&lt;/li&gt;
+&lt;li&gt;Principal Component Analysis (PCA)&lt;/li&gt;
+&lt;li&gt;Sparse PCA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
 &lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
 &lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
 &lt;p&gt;Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;
@@ -1112,6 +860,18 @@ text(25, 1000, labels =  &amp;quot;PCA&amp;quot;, cex=1.3)
       <guid>https://jungyeol-kim.github.io/project/v2v/</guid>
       <description>&lt;p&gt;V2V technologies bridge two infrastructures: communication and transportation. These infrastructures are interconnected and interdependent. To capture this inter-dependence, which may vary in time and space, we propose a new methodology for modeling information propagation between V2V-enabled vehicles. The model is based on a continuous-time Markov chain which is shown to converge, under appropriate conditions, to a set of clustered epidemiological differential equations. The fraction of vehicles which have received a message, as a function of space and time may be obtained as a solution of these differential equations, which can be solved efficiently, independently of the number of vehicles.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Objective:&lt;/strong&gt; Our goal is to model the spread of V2V messages and obatin the fraction of vehicles which have received a message in arbitrary transportation networks, as a function of space and time, using a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt;.&lt;/p&gt;
+&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Mobility and Communicatoin Networks&lt;/li&gt;
+&lt;li&gt;Generation of Differential Equations&lt;/li&gt;
+&lt;li&gt;Solving Differential Equations
+&lt;ul&gt;
+&lt;li&gt;Initial condition&lt;/li&gt;
+&lt;li&gt;Solution of differential equations&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;Generating Figures&lt;/li&gt;
+&lt;/ul&gt;
 &lt;h2 id=&#34;mobility-and-communicatoin-networks&#34;&gt;Mobility and Communicatoin Networks&lt;/h2&gt;
 &lt;!-- ### Case study: Grid road topology --&gt;
 &lt;p&gt;
@@ -1432,27 +1192,6 @@ legend(0, 0.0025, legend=c(&amp;quot;Infomred&amp;quot;,&amp;quot;Non-infomred&a
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://jungyeol-kim.github.io/project/v2v/index.en_files/figure-html/unnamed-chunk-23-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;[1] Kim, J., Sarkar, S., Venkatesh, S. S., Ryerson, M. S., &amp;amp; Starobinski, D. (2020). An epidemiological diffusion framework for vehicular messaging in general transportation networks. Transportation Research Part B: Methodological, 131, 160-190.&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>External Project</title>
-      <link>https://jungyeol-kim.github.io/project/external-project/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/external-project/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Internal Project</title>
-      <link>https://jungyeol-kim.github.io/project/internal-project/</link>
-      <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
-      <guid>https://jungyeol-kim.github.io/project/internal-project/</guid>
-      <description>&lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis posuere tellus ac convallis placerat. Proin tincidunt magna sed ex sollicitudin condimentum. Sed ac faucibus dolor, scelerisque sollicitudin nisi. Cras purus urna, suscipit quis sapien eu, pulvinar tempor diam. Quisque risus orci, mollis id ante sit amet, gravida egestas nisl. Sed ac tempus magna. Proin in dui enim. Donec condimentum, sem id dapibus fringilla, tellus enim condimentum arcu, nec volutpat est felis vel metus. Vestibulum sit amet erat at nulla eleifend gravida.&lt;/p&gt;
-&lt;p&gt;Nullam vel molestie justo. Curabitur vitae efficitur leo. In hac habitasse platea dictumst. Sed pulvinar mauris dui, eget varius purus congue ac. Nulla euismod, lorem vel elementum dapibus, nunc justo porta mi, sed tempus est est vel tellus. Nam et enim eleifend, laoreet sem sit amet, elementum sem. Morbi ut leo congue, maximus velit ut, finibus arcu. In et libero cursus, rutrum risus non, molestie leo. Nullam congue quam et volutpat malesuada. Sed risus tortor, pulvinar et dictum nec, sodales non mi. Phasellus lacinia commodo laoreet. Nam mollis, erat in feugiat consectetur, purus eros egestas tellus, in auctor urna odio at nibh. Mauris imperdiet nisi ac magna convallis, at rhoncus ligula cursus.&lt;/p&gt;
-&lt;p&gt;Cras aliquam rhoncus ipsum, in hendrerit nunc mattis vitae. Duis vitae efficitur metus, ac tempus leo. Cras nec fringilla lacus. Quisque sit amet risus at ipsum pharetra commodo. Sed aliquam mauris at consequat eleifend. Praesent porta, augue sed viverra bibendum, neque ante euismod ante, in vehicula justo lorem ac eros. Suspendisse augue libero, venenatis eget tincidunt ut, malesuada at lorem. Donec vitae bibendum arcu. Aenean maximus nulla non pretium iaculis. Quisque imperdiet, nulla in pulvinar aliquet, velit quam ultrices quam, sit amet fringilla leo sem vel nunc. Mauris in lacinia lacus.&lt;/p&gt;
-&lt;p&gt;Suspendisse a tincidunt lacus. Curabitur at urna sagittis, dictum ante sit amet, euismod magna. Sed rutrum massa id tortor commodo, vitae elementum turpis tempus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean purus turpis, venenatis a ullamcorper nec, tincidunt et massa. Integer posuere quam rutrum arcu vehicula imperdiet. Mauris ullamcorper quam vitae purus congue, quis euismod magna eleifend. Vestibulum semper vel augue eget tincidunt. Fusce eget justo sodales, dapibus odio eu, ultrices lorem. Duis condimentum lorem id eros commodo, in facilisis mauris scelerisque. Morbi sed auctor leo. Nullam volutpat a lacus quis pharetra. Nulla congue rutrum magna a ornare.&lt;/p&gt;
-&lt;p&gt;Aliquam in turpis accumsan, malesuada nibh ut, hendrerit justo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Quisque sed erat nec justo posuere suscipit. Donec ut efficitur arcu, in malesuada neque. Nunc dignissim nisl massa, id vulputate nunc pretium nec. Quisque eget urna in risus suscipit ultricies. Pellentesque odio odio, tincidunt in eleifend sed, posuere a diam. Nam gravida nisl convallis semper elementum. Morbi vitae felis faucibus, vulputate orci placerat, aliquet nisi. Aliquam erat volutpat. Maecenas sagittis pulvinar purus, sed porta quam laoreet at.&lt;/p&gt;
 </description>
     </item>
     

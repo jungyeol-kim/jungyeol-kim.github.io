@@ -17,7 +17,13 @@
       <link>https://jungyeol-kim.github.io/project/sparse-pca/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/sparse-pca/</guid>
-      <description>&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Exploratory Data Analysis&lt;/li&gt;
+&lt;li&gt;Principal Component Analysis (PCA)&lt;/li&gt;
+&lt;li&gt;Sparse PCA&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;exploratory-data-analysis&#34;&gt;Exploratory Data Analysis&lt;/h2&gt;
 &lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
 &lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
 &lt;p&gt;Figure 1 and 2 provide summary statistics. Figure 1 represents the number of samples available for each of the tissues, and Figure 2 represents the number of tissues provided by each of the donors.&lt;/p&gt;

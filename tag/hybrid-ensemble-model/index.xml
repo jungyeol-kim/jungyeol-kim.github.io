@@ -17,11 +17,15 @@
       <link>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/hybrid-ensemble-model/</guid>
-      <description>&lt;script src=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/kePrint/kePrint.js&#34;&gt;&lt;/script&gt;
-&lt;link href=&#34;https://jungyeol-kim.github.io/rmarkdown-libs/lightable/lightable.css&#34; rel=&#34;stylesheet&#34; /&gt;
+      <description>&lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Multiclass Logistic Regression with Lasso&lt;/li&gt;
+&lt;li&gt;Multiclass Random Forest&lt;/li&gt;
+&lt;li&gt;Multiclass Gradient Boosting (XGBoost)&lt;/li&gt;
+&lt;li&gt;Hybrid Ensemble Learning&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving &lt;strong&gt;Multinomial logistic regression with lasso&lt;/strong&gt;, &lt;strong&gt;Random forest&lt;/strong&gt;, and &lt;strong&gt;Gradient boosting&lt;/strong&gt;. More importantly, we will combine all the three heterogeneous models into single strong classifier, &lt;strong&gt;Hybrid ensemble model&lt;/strong&gt;. We will compare individual classification models with our hybrid ensemble model.&lt;/p&gt;
 &lt;p&gt;The raw data can be obtained from &lt;a href=&#34;https://gtexportal.org/home/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;https://gtexportal.org/home/&lt;/a&gt;. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.&lt;/p&gt;
-&lt;p&gt;The dataset I use here is equivalent to the one in the previous project. We thus omit summary statistics.&lt;/p&gt;
 &lt;p&gt;Get the libraries and import the data:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&#34;language-r&#34;&gt;final.data.scale &amp;lt;- get(load(&amp;quot;final_data_scale.RData&amp;quot;))
 &lt;/code&gt;&lt;/pre&gt;
@@ -319,7 +323,7 @@ print(paste(&amp;quot;Final Accuracy =&amp;quot;,sprintf(&amp;quot;%1.2f%%&amp;q
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This gives as output an accuracy of 95.46%.&lt;/p&gt;
 &lt;p&gt;XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.&lt;/p&gt;
-&lt;table class=&#34; lightable-classic&#34; style=&#34;font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;&#34;&gt;
+&lt;table&gt;
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style=&#34;text-align:left;&#34;&gt; Model &lt;/th&gt;

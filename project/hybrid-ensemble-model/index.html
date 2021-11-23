@@ -30,7 +30,7 @@
   
     
   
-  <meta name="description" content="Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." />
+  <meta name="description" content="Contents  Multiclass Logistic Regression with Lasso Multiclass Random Forest Multiclass Gradient Boosting (XGBoost) Hybrid Ensemble Learning  Our objective is to see whether gene expression data can predict all types of brain tissues." />
 
   
   <link rel="alternate" hreflang="en-us" href="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" />
@@ -297,7 +297,7 @@
   <meta property="og:site_name" content="Jungyeol Kim" />
   <meta property="og:url" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/" />
   <meta property="og:title" content="Hybrid Ensemble Learning: Predicting all 13 types of brain tissues using high dimensional gene expression data | Jungyeol Kim" />
-  <meta property="og:description" content="Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png" />
+  <meta property="og:description" content="Contents  Multiclass Logistic Regression with Lasso Multiclass Random Forest Multiclass Gradient Boosting (XGBoost) Hybrid Ensemble Learning  Our objective is to see whether gene expression data can predict all types of brain tissues." /><meta property="og:image" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png" />
     <meta property="twitter:image" content="https://jungyeol-kim.github.io/project/hybrid-ensemble-model/featured.png" /><meta property="og:locale" content="en-us" />
   
     
@@ -347,7 +347,7 @@
       "url": "https://jungyeol-kim.github.io/media/icon_hua2ec155b4296a9c9791d015323e16eb5_11927_192x192_fill_lanczos_center_3.png"
     }
   },
-  "description": "Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving Multinomial logistic regression with lasso, Random forest, and Gradient boosting."
+  "description": "Contents  Multiclass Logistic Regression with Lasso Multiclass Random Forest Multiclass Gradient Boosting (XGBoost) Hybrid Ensemble Learning  Our objective is to see whether gene expression data can predict all types of brain tissues."
 }
 </script>
 
@@ -721,11 +721,15 @@
   <div class="article-container">
 
     <div class="article-style">
-      <script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
-<link href="/rmarkdown-libs/lightable/lightable.css" rel="stylesheet" />
+      <h3 id="contents">Contents</h3>
+<ul>
+<li>Multiclass Logistic Regression with Lasso</li>
+<li>Multiclass Random Forest</li>
+<li>Multiclass Gradient Boosting (XGBoost)</li>
+<li>Hybrid Ensemble Learning</li>
+</ul>
 <p>Our objective is to see whether gene expression data can predict all types of brain tissues. We will be covering multiclass classification models, involving <strong>Multinomial logistic regression with lasso</strong>, <strong>Random forest</strong>, and <strong>Gradient boosting</strong>. More importantly, we will combine all the three heterogeneous models into single strong classifier, <strong>Hybrid ensemble model</strong>. We will compare individual classification models with our hybrid ensemble model.</p>
 <p>The raw data can be obtained from <a href="https://gtexportal.org/home/" target="_blank" rel="noopener">https://gtexportal.org/home/</a>. Zhen Miao at the University of Pennsylvania kindly processed the data by filtering out all the non-coding genes from the GTEx data, leaving 19,297 coding genes and their expressions. In addition to his processing, we further removed 49 genes (features) from the raw data since the genes has no value across all samples. We then standardized the data before performing multiclass classification.</p>
-<p>The dataset I use here is equivalent to the one in the previous project. We thus omit summary statistics.</p>
 <p>Get the libraries and import the data:</p>
 <pre><code class="language-r">final.data.scale &lt;- get(load(&quot;final_data_scale.RData&quot;))
 </code></pre>
@@ -1023,7 +1027,7 @@ print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result
 </code></pre>
 <p>This gives as output an accuracy of 95.46%.</p>
 <p>XGBoost is an gradient boosting algorithm that has recently been dominating applied machine learning and Kaggle competitions for structured or tabular data. Nevertheless, hybrid ensemble model outperforms all individual models including XGBoost. It is expected that the performance of the classifier can be further improved by combining a larger number of heterogeneous models.</p>
-<table class=" lightable-classic" style="font-family: Cambria; width: auto !important; margin-left: auto; margin-right: auto;">
+<table>
  <thead>
   <tr>
    <th style="text-align:left;"> Model </th>
@@ -1065,6 +1069,8 @@ print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result
 
 
 <div class="article-tags">
+  
+  <a class="badge badge-light" href="/tag/r/">R</a>
   
   <a class="badge badge-light" href="/tag/multinomial-logistic-regression-with-lasso/">Multinomial Logistic Regression with Lasso</a>
   
@@ -1217,6 +1223,23 @@ print(paste(&quot;Final Accuracy =&quot;,sprintf(&quot;%1.2f%%&quot;, 100*result
 
 
   
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/post/lasso/">Lasso and Estimation Bound</a></li>
+      
+      <li><a href="/project/traffic-signal/">Modeling the Impact of Traffic Signals on V2V Information Flow</a></li>
+      
+      <li><a href="/project/sparse-pca/">Sparse PCA: Dimensionality Reduction for High Dimensional Gene Expression Data</a></li>
+      
+      <li><a href="/project/contact-tracing/">Tracing and testing multiple generations of contacts to COVID-19 cases: cost-benefit tradeoffs</a></li>
+      
+      <li><a href="/project/v2v/">Vehicular Messaging Simulation</a></li>
+      
+    </ul>
+  </div>
   
 
 
