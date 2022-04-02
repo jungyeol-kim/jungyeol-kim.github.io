@@ -868,7 +868,7 @@ For the model $ Y=X\beta^{\star}+\epsilon $, where $ \epsilon \sim \text{subG}(\
       <link>https://jungyeol-kim.github.io/project/v2v/</link>
       <pubDate>Tue, 01 Dec 2020 21:13:14 -0500</pubDate>
       <guid>https://jungyeol-kim.github.io/project/v2v/</guid>
-      <description>
+      <description>&lt;!-- 
 
 
 
@@ -885,7 +885,7 @@ For the model $ Y=X\beta^{\star}+\epsilon $, where $ \epsilon \sim \text{subG}(\
 
 &lt;video controls  &gt;
   &lt;source src=&#34;https://jungyeol-kim.github.io/project/v2v/output.mp4&#34; type=&#34;video/mp4&#34;&gt;
-&lt;/video&gt;
+&lt;/video&gt; --&gt;
 &lt;p&gt;V2V technologies bridge two infrastructures: communication and transportation. These infrastructures are interconnected and interdependent. To capture this inter-dependence, which may vary in time and space, we propose a new methodology for modeling information propagation between V2V-enabled vehicles. The model is based on a continuous-time Markov chain which is shown to converge, under appropriate conditions, to a set of clustered epidemiological differential equations. The fraction of vehicles which have received a message, as a function of space and time may be obtained as a solution of these differential equations, which can be solved efficiently, independently of the number of vehicles.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Objective:&lt;/strong&gt; Our goal is to model the spread of V2V messages and obatin the fraction of vehicles which have received a message in arbitrary transportation networks, as a function of space and time, using a set of &lt;em&gt;clustered epidemiological differential equations&lt;/em&gt;.&lt;/p&gt;
 &lt;h3 id=&#34;contents&#34;&gt;Contents&lt;/h3&gt;
